@@ -12,7 +12,10 @@ void	handle_sigint(int signum)
 int main(void)
 {
     char    *input;
+	t_token *token;
+	int 	i = 0;
 
+	token = NULL;
     signal(SIGINT, handle_sigint); // gère ctrl-c
     signal(SIGQUIT, SIG_IGN); // gère ctrl-/
     while (1)
@@ -26,9 +29,21 @@ int main(void)
 		if (input[0])
 		{
 			add_history(input);
-			input_in_token(input);
+			tokenizer(input, &token);
+		}
+		t_token *tmp_token = token;
+		int i = 0;
+		while (tmp_token)
+		{
+   			if (tmp_token->string)
+    			printf("token n° %d : %s\n", i, tmp_token->string);
+			else
+    			printf("token n° %d : (null string)\n", i);
+   			i++;
+  			tmp_token = tmp_token->next;
 		}
 		free(input);
+		ft_tokenlstclear(&token);
 	}
     return (0);
 }
