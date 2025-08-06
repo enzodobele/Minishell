@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:44:11 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/06 12:19:36 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/06 15:44:14 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	here_doc_unlink(t_pipex *pipex)
 	}
 }
 
-int	check_fd(t_pipex *pipex)
+int	check_heredoc_fd(t_pipex *pipex)
 {
 	if (pipex->infile_fd < 0)
 	{
@@ -57,7 +57,7 @@ int	here_doc_parse_args(t_pipex *pipex, int argc, char *argv[])
 			return (-1);
 		i++;
 	}
-	if (check_fd(pipex) < 0)
+	if (check_heredoc_fd(pipex) < 0)
 		return (-1);
 	return (0);
 }
