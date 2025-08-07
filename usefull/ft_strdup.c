@@ -5,7 +5,7 @@ char	*ft_strdup(const char *s, int len_s, int i)
 	int		j;
 	char	*tab;
 
-	tab = malloc(sizeof(char) * (len_s));
+	tab = malloc(sizeof(char) * (len_s + 1));
 	if (!tab)
 		return (0);
 	j = 0;

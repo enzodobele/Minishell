@@ -68,4 +68,52 @@ char *input_in_string(int i, char *input)
 		string[j++] = input[i++];
 	string[j] = '\0';
 	return (string);
+}
+	int	add_new_token_var(int start, int i, t_token **token, char *input)
+{
+	t_token *new_token;
+
+	new_token = malloc(sizeof (t_token));
+	if (!new_token)
+		return (perror("Malloc failed"), 0);
+	new_token->string = ft_strdup(input, (i - start), start);
+	if (!new_token->string)
+		return(perror("Malloc failed"), free(new_token), 0);
+	new_token->type = VAR;
+	new_token->quote_type = NO_WORD;
+	new_token->next = NULL;
+	ft_lstadd_back(token, new_token);
+	return (1);
+}
+int	add_new_token_symbol_duo(t_token_type symbol, int i, t_token **token, char *input)
+{
+	t_token *new_token;
+
+	new_token = malloc(sizeof (t_token));
+	if (!new_token)
+		return (perror("Malloc failed"), 0);
+	new_token->string = ft_strdup(input, 2, i);
+	if (!new_token->string)
+		return(perror("Malloc failed"), free(new_token), 0);
+	new_token->type = symbol;
+	new_token->quote_type = NO_WORD;
+	new_token->next = NULL;
+	ft_lstadd_back(token, new_token);
+	return (1);
+}
+int	add_new_token_symbol_solo(t_token_type symbol, int i, t_token **token, char *input)
+{
+	t_token *new_token;
+
+	new_token = malloc(sizeof (t_token));
+	if (!new_token)
+		return (perror("Malloc failed"), 0);
+	new_token->string = ft_strdup(input, 1, i);
+	if (!new_token->string)
+		return(perror("Malloc failed"), free(new_token), 0);
+	new_token->type = symbol;
+	new_token->quote_type = NO_WORD;
+	new_token->next = NULL;
+	ft_lstadd_back(token, new_token);
+	return (1);
 }*/
