@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 14:12:34 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/06 11:18:32 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/07 13:05:22 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,23 @@ int	exec(t_pipex *pipex, int i, int in_fd)
 static int	wait_for_children(void)
 {
 	int	status;
+	int	exit_status;
 	int	last_exit_status;
 
+	exit_status = 0;
 	last_exit_status = 0;
 	while (wait(&status) > 0)
 	{
 		if (WIFEXITED(status))
+		{
 			last_exit_status = WEXITSTATUS(status);
+			if (last_exit_status != 0)
+				exit_status = last_exit_status;
+		}
 	}
-	return (last_exit_status);
+	if (exit_status == 0)
+		exit_status = last_exit_status;
+	return (exit_status);
 }
 
 int	pipex(t_pipex *pipex)

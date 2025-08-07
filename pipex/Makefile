@@ -23,7 +23,6 @@ BONUS = \
 	main_bonus.c \
 	here_doc_bonus.c \
 
-
 SRCS_PATH = $(addprefix $(SRCS_DIR)/, $(SRCS))
 MANDATORY_PATH = $(addprefix $(SRCS_DIR)/, $(MANDATORY))
 BONUS_PATH = $(addprefix $(SRCS_DIR)/, $(BONUS))
@@ -66,7 +65,6 @@ fclean: clean
 fclean_bonus: clean
 	@echo "Nettoyage de $(NAME), libft et fichiers bonus..."
 	@rm -f $(NAME)
-	@rm -f here_doc
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all

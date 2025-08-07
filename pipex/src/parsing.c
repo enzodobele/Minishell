@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 14:38:18 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/06 12:22:49 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/07 13:06:20 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	check_fd(t_pipex *pipex)
 	{
 		perror(pipex->infile);
 		pipex->infile_fd = -1;
+		return (-1);
 	}
 	pipex->outfile_fd = open(pipex->outfile, O_WRONLY | O_CREAT
 			| O_TRUNC, 0644);
@@ -26,6 +27,7 @@ int	check_fd(t_pipex *pipex)
 	{
 		perror(pipex->outfile);
 		pipex->outfile_fd = -1;
+		return (-1);
 	}
 	return (0);
 }
@@ -58,11 +60,7 @@ int	check_command(t_pipex *pipex, char *cmd, int index)
 	if (!cmd || !pipex || !pipex->path)
 		return (-1);
 	if (ft_strchr(cmd, '/') != NULL && access(cmd, F_OK | X_OK) == 0)
-	{
-		ft_my_free(pipex->allocator, pipex->cmds[index][0]);
-		pipex->cmds[index][0] = ft_strdup(cmd);
 		return (0);
-	}
 	i = -1;
 	while (pipex->path[++i])
 	{

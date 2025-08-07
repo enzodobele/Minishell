@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:44:11 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/06 15:44:14 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/07 13:07:08 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ void	here_doc_unlink(t_pipex *pipex)
 
 int	check_heredoc_fd(t_pipex *pipex)
 {
+	pipex->infile_fd = open("here_doc", O_RDONLY);
 	if (pipex->infile_fd < 0)
 	{
 		perror(pipex->infile);
-		pipex->infile_fd = -1;
+		return (-1);
 	}
 	pipex->outfile_fd = open(pipex->outfile, O_WRONLY | O_CREAT
 			| O_APPEND, 0644);
@@ -83,6 +84,7 @@ int	here_doc(t_pipex *pipex, int argc, char *argv[])
 		write(pipex->infile_fd, line, ft_strlen(line));
 		free(line);
 	}
+	close(pipex->infile_fd);
 	get_next_line(-1);
 	if (here_doc_parse_args(pipex, argc, argv) < 0)
 		return (-1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 14:12:12 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/05 18:39:40 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/07 13:05:39 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ int	main(int argc, char *argv[], char *envp[])
 	t_pipex	*pipex_data;
 	int		exit_status;
 
-	if (argc != 5 || strcmp(argv[1], "here_doc") == 0)
-		return (ft_putstr_fd("Usage: ./pipex infile cmd1 cmd2 outfile\n", 2), 1);
+	if (argc != 5)
+		return (ft_putstr_fd("Usage: ./pipex infile cmd1 cmd2 outfile\n",
+				2), 1);
 	pipex_data = init_pipex(NULL, envp);
 	if (!pipex_data)
 		return (1);
