@@ -27,6 +27,8 @@ SRC = \
 	tokenizer.c \
 	type_token.c \
 	token_check_syntaxe.c \
+	m_exec.c \
+	m_debug.c \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \

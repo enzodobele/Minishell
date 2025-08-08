@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstsize.c                                       :+:      :+:    :+:   */
+/*   m_minishell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/25 12:57:04 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/04/25 14:46:38 by mzimeris         ###   ########.fr       */
+/*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
+/*   Updated: 2025/08/08 14:53:06 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef M_MINISHELL_H
+# define M_MINISHELL_H
 
-int	ft_lstsize(t_list *lst)
-{
-	int	i;
+# include "minishell.h"
+# include <linux/limits.h>
 
-	i = 0;
-	while (lst)
-	{
-		i++;
-		lst = lst->next;
-	}
-	return (i);
-}
+void	debug_print_token(t_token *token);
+void	debug_print_all_tokens(t_token *token);
+
+#endif /* M_MINISHELL_H */

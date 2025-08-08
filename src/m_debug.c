@@ -1,28 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_dlstsize.c                                      :+:      :+:    :+:   */
+/*   m_debug.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/11 18:14:18 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/06/11 18:52:18 by mzimeris         ###   ########.fr       */
+/*   Created: 2025/08/08 13:24:53 by mzimeris          #+#    #+#             */
+/*   Updated: 2025/08/08 13:36:49 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_dlstsize(t_dblist **lst)
+void	debug_print_token(t_token *token)
 {
-	t_elem	*elem;
+	if (!token)
+		return ;
+	printf("string: %s\n", token->string);
+	printf("type: %d\n", token->type);
+	printf("quote_type: %d\n", token->quote_type);
+}
+
+void	debug_print_all_tokens(t_token *token)
+{
+	t_token	*tmp_token;
 	int		i;
 
-	elem = (*lst)->first;
-	i = 0;
-	while (elem)
+	tmp_token = token;
+	i = 1;
+	while (tmp_token)
 	{
-		i++;
-		elem = elem->next;
+		printf("Token %d:\n", i++);
+		debug_print_token(tmp_token);
+		tmp_token = tmp_token->next;
 	}
-	return (i);
 }
