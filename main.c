@@ -24,23 +24,45 @@ int	has_unclosed_quotes(char *str)
 	}
 	return (squote % 2 != 0 || dquote % 2 != 0);
 }
-int	has_trailing_pipe(char *str)
+int	has_trailing_pipe(char *input)
 {
 	int	i;
 
 	i = 0;
-	while (str[i])
+	while (input[i])
 		i++;
 	i--;
-	while (i >= 0 && (str[i] == ' ' || str[i] == '\t'))
+	while (i >= 0 && (input[i] == ' ' || input[i] == '\t'))
 		i--;
-	return (i >= 0 && str[i] == '|');
+	return (i >= 0 && input[i] == '|');
+}
+int	has_leading_pipe(char *input)
+{
+	int	i;
+
+	i = 0;
+	while (input[i] == ' ' || input[i] == '\t')
+		i++;
+	if (input[i + 1] && input[i + 1] == '|')
+	{
+		add_history(input);
+		printf("Minishell : syntax error near unexpected token `||'\n");
+		return (1);
+	}
+	if (input[i] == '|')
+	{
+		add_history(input);
+		printf("Minishell: syntax error near unexpected token `|'\n");
+		return (1);
+	}
+	return (0);
 }
 int main(void)
 {
     char    *input;
 	t_token *token;
-	char *next_line;
+	char 	*next_line;
+	char 	*joined;
 
 	token = NULL;
     signal(SIGINT, handle_sigint); // gère ctrl-c
@@ -53,11 +75,27 @@ int main(void)
 		write(1, "exit\n", 5);
 		break;
 	}
+	if (has_leading_pipe(input))
+		continue;
+	while (has_unclosed_quotes(input) || has_trailing_pipe(input))
+	{
+		next_line = readline("> ");
+		if (!next_line)
+		{
+			free(input);
+			break;
+		}
+		joined = ft_strjoin(input, "\n");
+		free(input);
+		input = ft_strjoin(joined, next_line);
+		free(joined);
+		free(next_line);
+	}
 	if (!tokenizer(input, &token, 0))
 	{
 		add_history(input);
 		free(input);
-		print("Malloc failed");
+		printf("Malloc failed");
 		continue;
 	}
 	if (!is_token_valid(token))
@@ -66,20 +104,6 @@ int main(void)
 		free(input);
 		ft_tokenlstclear(&token);
 		continue;
-	}
-	while (has_unclosed_quotes(input) || has_trailing_pipe(input))
-{
-	next_line = readline("> ");
-	if (!next_line)
-	{
-		free(input);
-		break;
-	}
-	char *joined = ft_strjoin(input, "\n");
-	free(input);
-	input = ft_strjoin(joined, next_line);
-	free(joined);
-	free(next_line);
 	}
 	if (input[0])
 	{

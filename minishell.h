@@ -53,12 +53,13 @@ int		add_new_token_word(int start, int i, t_token **token, char *input);
 int		is_special_char(char c);
 int		ft_isdigit(int c);
 int		is_dollard(t_token **token, char *input, int i);
-int		has_unclosed_quotes(char *str);
+int		has_unclosed_quotes(char *input);
 int		create_token(t_token_data data, char *input, t_token **token);
 int		is_greater_than_symbol(t_token **token, char *input, int i);
 int		is_less_than_symbol(t_token **token, char *input, int i);
 int		is_pipe(t_token **token, char *input, int i);
 int		is_token_valid(t_token *token);
+int		has_leading_pipe(char *input);
 
 // lib
 char	*ft_strdup(const char *s, int len_s, int i);
