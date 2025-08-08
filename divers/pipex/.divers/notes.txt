@@ -1,0 +1,6 @@
+pipex
+parsing ok
+check parameters ok
+exec first command
+pipe
+exec second command
