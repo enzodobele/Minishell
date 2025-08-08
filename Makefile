@@ -3,43 +3,60 @@ NAME = minishell
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
+SRC_DIR = src
+LIBFT_DIR = usefull
+OBJ_DIR = obj
+INCLUDES_DIR = includes
+
 LIBS = -lreadline
 
-SRCS = \
-	./main.c \
-	./tokenizer.c \
-	./type_token.c \
-	./usefull/ft_lstadd_back.c \
-	./usefull/ft_strdup.c \
-	./usefull/ft_strlen.c \
-	./usefull/ft_lstclear.c \
-	./usefull/ft_isalnum.c \
-	./usefull/ft_isalpha.c \
-	./usefull/ft_isdigit.c \
-	./usefull/ft_strjoin.c \
-	./usefull/is_char_token.c \
-	./token_check_syntaxe.c \
-	./usefull/ft_strcmp.c \
+LIBFT = \
+	ft_lstadd_back.c \
+	ft_strdup.c \
+	ft_strlen.c \
+	ft_lstclear.c \
+	ft_isalnum.c \
+	ft_isalpha.c \
+	ft_isdigit.c \
+	ft_strjoin.c \
+	is_char_token.c \
+	ft_strcmp.c \
 
-OBJS = $(SRCS:.c=.o)
+SRC = \
+	main.c \
+	tokenizer.c \
+	type_token.c \
+	token_check_syntaxe.c \
+
+SRC_ALL = \
+	$(addprefix $(SRC_DIR)/, $(SRC)) \
+	$(addprefix $(LIBFT_DIR)/, $(LIBFT)) \
+
+OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRC_ALL)))
 
 GREEN = \033[0;32m
 YELLOW = \033[0;33m
 RED = \033[0;31m
 RESET = \033[0m
 
-all: $(NAME)
+all: $(OBJ_DIR) $(NAME)
 
 $(NAME): $(OBJS)
 	@echo "$(YELLOW)🔧 Compilation de $(NAME)...$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 	@echo "$(GREEN)✅ Compilé avec succès !$(RESET)"
 
-%.o: %.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(LIBFT_DIR)/%.c
+	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
 
 clean:
-	@rm -f $(OBJS)
+	@rm -rf $(OBJ_DIR)
 	@echo "$(RED)🧹 Fichiers objets supprimés.$(RESET)"
 
 fclean: clean
