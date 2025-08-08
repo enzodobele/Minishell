@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edobele <edobele@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/08 12:42:39 by edobele           #+#    #+#             */
+/*   Updated: 2025/08/08 12:42:39 by mzimeris         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <stdio.h>
-#include <signal.h>
-#include <unistd.h>
-#include <stdlib.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <stdio.h>
+# include <signal.h>
+# include <unistd.h>
+# include <stdlib.h>
 
-typedef	enum	e_token_type
+typedef enum e_token_type
 {
 	WORD,
 	PIPE, // |
@@ -20,14 +32,15 @@ typedef	enum	e_token_type
 	VAR, // $
 }	t_token_type;
 
-typedef enum	e_quote_type {
+typedef enum e_quote_type
+{
 	NO_QUOTE,
 	SINGLE_QUOTE,
 	DOUBLE_QUOTE,
 	NO_WORD
 }	t_quote_type;
 
-typedef	struct	s_token
+typedef struct s_token
 {
 	char			*string;
 	t_token_type	type;
@@ -72,4 +85,4 @@ int		ft_isdigit(int c);
 char	*ft_strjoin(const char *str1, const char *str2);
 int		ft_strcmp(const char *s1, const char *s2);
 
-#endif
+#endif /* MINISHELL_H */
