@@ -12,6 +12,7 @@ typedef	enum	e_token_type
 {
 	WORD,
 	PIPE, // |
+	LOGICAL_OR, // ||
 	REDIR_IN, // <
 	REDIR_OUT, // >
 	REDIR_APPEND, // >>
@@ -32,6 +33,7 @@ typedef	struct	s_token
 	t_token_type	type;
 	t_quote_type	quote_type;
 	struct s_token	*next;
+	struct s_token	*prev;
 }	t_token;
 
 typedef struct s_token_data
@@ -56,6 +58,7 @@ int		create_token(t_token_data data, char *input, t_token **token);
 int		is_greater_than_symbol(t_token **token, char *input, int i);
 int		is_less_than_symbol(t_token **token, char *input, int i);
 int		is_pipe(t_token **token, char *input, int i);
+int		is_token_valid(t_token *token);
 
 // lib
 char	*ft_strdup(const char *s, int len_s, int i);
@@ -66,5 +69,6 @@ int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 int		ft_isdigit(int c);
 char	*ft_strjoin(const char *str1, const char *str2);
+int		ft_strcmp(const char *s1, const char *s2);
 
 #endif

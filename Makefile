@@ -17,7 +17,9 @@ SRCS = \
 	./usefull/ft_isalpha.c \
 	./usefull/ft_isdigit.c \
 	./usefull/ft_strjoin.c \
-	./usefull/is_char_token.c
+	./usefull/is_char_token.c \
+	./token_check_syntaxe.c \
+	./usefull/ft_strcmp.c \
 
 OBJS = $(SRCS:.c=.o)
 

@@ -24,10 +24,23 @@ int	has_unclosed_quotes(char *str)
 	}
 	return (squote % 2 != 0 || dquote % 2 != 0);
 }
+int	has_trailing_pipe(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	i--;
+	while (i >= 0 && (str[i] == ' ' || str[i] == '\t'))
+		i--;
+	return (i >= 0 && str[i] == '|');
+}
 int main(void)
 {
     char    *input;
 	t_token *token;
+	char *next_line;
 
 	token = NULL;
     signal(SIGINT, handle_sigint); // gère ctrl-c
@@ -40,18 +53,33 @@ int main(void)
 		write(1, "exit\n", 5);
 		break;
 	}
-	while (has_unclosed_quotes(input))
+	if (!tokenizer(input, &token, 0))
 	{
-		char *next_line = readline("> ");
-		if (!next_line)
-			break;
-		char *tmp = input;
-		input = ft_strjoin(tmp, "\n");
-		free(tmp);
-		tmp = input;
-		input = ft_strjoin(tmp, next_line);
-		free(tmp);
-		free(next_line);
+		add_history(input);
+		free(input);
+		print("Malloc failed");
+		continue;
+	}
+	if (!is_token_valid(token))
+	{
+		add_history(input);
+		free(input);
+		ft_tokenlstclear(&token);
+		continue;
+	}
+	while (has_unclosed_quotes(input) || has_trailing_pipe(input))
+{
+	next_line = readline("> ");
+	if (!next_line)
+	{
+		free(input);
+		break;
+	}
+	char *joined = ft_strjoin(input, "\n");
+	free(input);
+	input = ft_strjoin(joined, next_line);
+	free(joined);
+	free(next_line);
 	}
 	if (input[0])
 	{

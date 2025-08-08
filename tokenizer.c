@@ -33,9 +33,17 @@ int	is_pipe(t_token **token, char *input, int i)
 	t_token_data	data;
 
 	data.start = i;
+	data.quote = NO_WORD;
+	if (input[i + 1] && input[i + 1] == '|')
+	{
+		data.len = 2;
+		data.type = LOGICAL_OR;
+		if (!create_token(data, input, token))
+			return (0);
+		return (2);
+	}
 	data.len = 1;
 	data.type = PIPE;
-	data.quote = NO_WORD;
 	if (!create_token(data, input, token))
 		return (0);
 	return (1);
@@ -71,6 +79,7 @@ int	create_token(t_token_data data, char *input, t_token **token)
 	new_token->type = data.type;
 	new_token->quote_type = data.quote;
 	new_token->next = NULL;
+	new_token->prev = NULL;
 	ft_lstadd_back(token, new_token);
 	return (1);
 }
@@ -95,6 +104,7 @@ int	add_new_token_word(int start, int i, t_token **token, char *input)
 	else
 		new_token->quote_type = NO_QUOTE;
 	new_token->next = NULL;
+	new_token->prev = NULL;
 	ft_lstadd_back(token, new_token);
 	return (1);
 }
