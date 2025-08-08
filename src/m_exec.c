@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/08 15:00:05 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/08 15:11:30 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	handle_cd(t_token *token)
 		return (chdir(getenv("HOME")));
 	else if (token->string[0] == '/' || token->string[0] == '~')
 		return (chdir(token->string));
-	else if (token->string[0] == '.')
 	return (-1);
 }
 
