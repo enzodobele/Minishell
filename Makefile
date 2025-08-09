@@ -29,6 +29,7 @@ SRC = \
 	token_check_syntaxe.c \
 	m_exec.c \
 	m_debug.c \
+	m_builtin_cd.c \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \

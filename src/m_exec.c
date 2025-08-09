@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/08 15:24:36 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/10 00:14:48 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,6 @@
 
 // }
 
-int	handle_cd(t_token *token)
-{
-	if (!token || !token->string)
-		return (-1);
-	if (token->string[0] == '\0')
-		return (chdir(getenv("HOME")));
-	else if (token->string[0] == '/' || token->string[0] == '~')
-		return (chdir(token->string));
-	else if (ft_strcmp(token->string, "-") == 0)
-		return (chdir(getenv("OLDPWD")));
-	else if (ft_strcmp(token->string, ".") == 0)
-		return (chdir(getenv("PWD")));
-	else if (ft_strcmp(token->string, "..") == 0)
-		return (chdir("..")); // TODO: handle relative paths properly
-	return (-1);
-}
-
 int	handle_pwd(void)
 {
 	char	cwd[PATH_MAX];
@@ -42,7 +25,8 @@ int	handle_pwd(void)
 		return (printf("%s\n", cwd));
 	return (-1);
 }
-// pwd return -1 on failure positive on success
+
+
 
 // int	handle_export(t_token *token)
 // {
@@ -64,31 +48,87 @@ int	handle_pwd(void)
 	
 // }
 
-int	exec_builtins(t_token *token)
+int	exec_builtins(char **commands)
 {
-	if (!token || !token->string)
+	if (!commands || !commands[0])
 		return (0);
-	// if (ft_strcmp(token->string, "echo") == 0) // besoin du param
-	// 	return (handle_echo(token));
-	if (ft_strcmp(token->string, "cd") == 0)
-		return (handle_cd(token->next));
-	if (ft_strcmp(token->string, "pwd") == 0)
+	
+	if (ft_strcmp(commands[0], "cd") == 0)
+		return (handle_cd(commands));
+	if (ft_strcmp(commands[0], "pwd") == 0)
 		return (handle_pwd());
-	// if (ft_strcmp(token->string, "export") == 0)
-	// 	return (handle_export(token->next));
-	// if (ft_strcmp(token->string, "unset") == 0)
-	// 	return (handle_unset(token));
-	// if (ft_strcmp(token->string, "env") == 0)
-	// 	return (handle_env(token));
-	// if (ft_strcmp(token->string, "exit") == 0)
-	// 	return (handle_exit(token));
+	// if (ft_strcmp(commands[0], "echo") == 0)
+	// 	return (handle_echo(commands));
+	// if (ft_strcmp(commands[0], "export") == 0)
+	// 	return (handle_export(commands));
+	// if (ft_strcmp(commands[0], "unset") == 0)
+	// 	return (handle_unset(commands));
+	// if (ft_strcmp(commands[0], "env") == 0)
+	// 	return (handle_env(commands));
+	// if (ft_strcmp(commands[0], "exit") == 0)
+	// 	return (handle_exit(commands));
 	// else
-	// 	return (find_and_exec(token));
+	// 	return (find_and_exec(commands));
+	
+	printf("Commande '%s' non reconnue comme builtin\n", commands[0]);
 	return (0);
 }
 
-// int	exec(t_token *token)
-// {
-// 	(void)token;
-// 	return (0);
-// }
+int	exec(char **commands)
+{
+	int	i;
+
+	if (!commands || !commands[0])
+	{
+		printf("Aucune commande reçue, lancement des tests automatiques...\n");
+		run_test_commands();
+		return (0);
+	}
+	printf("Exécution de: ");
+	i = 0;
+	while (commands[i])
+	{
+		printf("%s ", commands[i]);
+		i++;
+	}
+	printf("\n");
+	return (exec_builtins(commands));
+}
+
+void	run_test_commands(void)
+{
+	char	*test1[] = {"pwd", NULL};
+	char	*test2[] = {"cd", "..", NULL};
+	char	*test3[] = {"cd", "/tmp", NULL};
+	char	*test4[] = {"cd", "~", NULL};
+	char	*test5[] = {"cd", NULL};
+	char	*test6[] = {"cd", "/home/zoum/code/minishell/pipex", NULL};
+	char	*test7[] = {"cd", "-", NULL};
+
+	printf("=== TESTS DE COMMANDES SIMPLIFIES ===\n");
+	printf("\n--- Test 1: pwd ---\n");
+	exec(test1);
+	printf("\n--- Test 2: cd .. ---\n");
+	exec(test2);
+	exec(test1);
+
+	printf("\n--- Test 3: cd /tmp ---\n");
+	exec(test3);
+	exec(test1);
+
+	printf("\n--- Test 4: cd ~ ---\n");
+	exec(test4);
+	exec(test1);
+
+	printf("\n--- Test 5: cd (sans paramètre) ---\n");
+	exec(test5);
+	exec(test1);
+
+	printf("\n--- Test 6: cd ---\n");
+	exec(test6);
+	exec(test1);
+
+	exec(test7);
+	exec(test1);
+	printf("\n=== FIN DES TESTS ===\n");
+}
