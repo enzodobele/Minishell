@@ -73,6 +73,7 @@ int		is_less_than_symbol(t_token **token, char *input, int i);
 int		is_pipe(t_token **token, char *input, int i);
 int		is_token_valid(t_token *token);
 int		has_leading_pipe(char *input);
+int		is_input_valid(char *input);
 
 // lib
 char	*ft_strdup(const char *s, int len_s, int i);

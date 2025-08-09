@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int	is_less_than_symbol(t_token **token, char *input, int i)
 {
