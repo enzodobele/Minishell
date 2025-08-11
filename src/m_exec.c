@@ -3,19 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/10 00:14:48 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/11 17:02:09 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "m_minishell.h"
 
-// int	handle_echo(t_token *token)
-// {
+// un seul builtin pour echo
+// echo -n pas de saut de ligne
+int	handle_echo(char **commands)
+{
+	int	i;
 
-// }
+	i = 0;
+	if (ft_strcmp(commands[1], "-n") == 0)
+	{
+		while (commands[2][i] && commands[2][i] != '\n')
+		{
+			write(1, &commands[2][i], 1);
+			i++;
+		}
+	}
+	return (0);
+}
 
 int	handle_pwd(void)
 {
@@ -38,35 +51,42 @@ int	handle_pwd(void)
 
 // }
 
-// int	handle_env(t_token *token)
-// {
-	
-// }
+int	handle_env(char **envp)
+{
+	int	i;
 
-// int	handle_exit(t_token *token)
-// {
-	
-// }
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
+	return (0);
+}
 
-int	exec_builtins(char **commands)
+int	handle_exit(void)
+{
+	exit(0);
+}
+
+int	exec_builtins(char **commands, char **envp)
 {
 	if (!commands || !commands[0])
 		return (0);
-	
 	if (ft_strcmp(commands[0], "cd") == 0)
 		return (handle_cd(commands));
 	if (ft_strcmp(commands[0], "pwd") == 0)
 		return (handle_pwd());
-	// if (ft_strcmp(commands[0], "echo") == 0)
-	// 	return (handle_echo(commands));
+	if (ft_strcmp(commands[0], "echo") == 0)
+		return (handle_echo(commands));
 	// if (ft_strcmp(commands[0], "export") == 0)
 	// 	return (handle_export(commands));
 	// if (ft_strcmp(commands[0], "unset") == 0)
 	// 	return (handle_unset(commands));
-	// if (ft_strcmp(commands[0], "env") == 0)
-	// 	return (handle_env(commands));
-	// if (ft_strcmp(commands[0], "exit") == 0)
-	// 	return (handle_exit(commands));
+	if (ft_strcmp(commands[0], "env") == 0)
+		return (handle_env(envp));
+	if (ft_strcmp(commands[0], "exit") == 0)
+		return (handle_exit());
 	// else
 	// 	return (find_and_exec(commands));
 	
@@ -74,14 +94,14 @@ int	exec_builtins(char **commands)
 	return (0);
 }
 
-int	exec(char **commands)
+int	exec(char **commands, char **envp)
 {
 	int	i;
 
 	if (!commands || !commands[0])
 	{
 		printf("Aucune commande reçue, lancement des tests automatiques...\n");
-		run_test_commands();
+		run_test_commands(envp);
 		return (0);
 	}
 	printf("Exécution de: ");
@@ -92,43 +112,20 @@ int	exec(char **commands)
 		i++;
 	}
 	printf("\n");
-	return (exec_builtins(commands));
+	return (exec_builtins(commands, envp));
 }
 
-void	run_test_commands(void)
+void	run_test_commands(char **envp)
 {
-	char	*test1[] = {"pwd", NULL};
-	char	*test2[] = {"cd", "..", NULL};
-	char	*test3[] = {"cd", "/tmp", NULL};
-	char	*test4[] = {"cd", "~", NULL};
-	char	*test5[] = {"cd", NULL};
-	char	*test6[] = {"cd", "/home/zoum/code/minishell/pipex", NULL};
-	char	*test7[] = {"cd", "-", NULL};
+	char	*test1[] = {"env", NULL};
+	char	*test2[] = {"exit", NULL};
+
 
 	printf("=== TESTS DE COMMANDES SIMPLIFIES ===\n");
-	printf("\n--- Test 1: pwd ---\n");
-	exec(test1);
-	printf("\n--- Test 2: cd .. ---\n");
-	exec(test2);
-	exec(test1);
-
-	printf("\n--- Test 3: cd /tmp ---\n");
-	exec(test3);
-	exec(test1);
-
-	printf("\n--- Test 4: cd ~ ---\n");
-	exec(test4);
-	exec(test1);
-
-	printf("\n--- Test 5: cd (sans paramètre) ---\n");
-	exec(test5);
-	exec(test1);
-
-	printf("\n--- Test 6: cd ---\n");
-	exec(test6);
-	exec(test1);
-
-	exec(test7);
-	exec(test1);
+	printf("\n--- Test 1: echo -n ---\n");
+	exec(test1, envp);
+	// printf("--- Test 2: exit ---\n");
+	exec(test2, envp);
+	
 	printf("\n=== FIN DES TESTS ===\n");
 }

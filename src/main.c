@@ -58,18 +58,21 @@ int	has_leading_pipe(char *input)
 	}
 	return (0);
 }
-int main(void)
+int main(int argc, char *argv[], char **envp)
 {
     char    *input;
 	t_token *token;
 	char 	*next_line;
 	char 	*joined;
 
+	if (argv[argc - 1][0] == '-')
+		printf("bouh");
+
 	token = NULL;
     signal(SIGINT, handle_sigint); // gère ctrl-c
     signal(SIGQUIT, SIG_IGN); // gère ctrl-/
     while (1)
-{
+	{
 	input = readline("minishell$ ");
 	if (!input)
 	{
@@ -125,9 +128,9 @@ int main(void)
    			i++;
   			tmp_token = tmp_token->next;
 		}
+		run_test_commands(envp);
 		free(input);
 		ft_tokenlstclear(&token);
 	}
-
-    return (0);
+	return (0);
 }
