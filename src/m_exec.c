@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/11 17:02:09 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:49:10 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,29 +40,6 @@ int	handle_pwd(void)
 }
 
 
-
-// int	handle_export(t_token *token)
-// {
-	
-// }
-
-// int	handle_unset(t_token *token)
-// {
-
-// }
-
-int	handle_env(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		printf("%s\n", envp[i]);
-		i++;
-	}
-	return (0);
-}
 
 int	handle_exit(void)
 {
