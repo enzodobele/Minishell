@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   m_builtin_env.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 11:48:41 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/12 12:05:36 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/12 18:58:37 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "m_minishell.h"
-
-
 
 // liste chainee pour les variables d'environnement
 int	handle_export(t_env **env, char *key, char *value)
@@ -32,9 +30,10 @@ int	handle_export(t_env **env, char *key, char *value)
 	current = *env;
 	while (current->next && ft_strcmp(current->next->key, key) != 0)
 		current = current->next;
-	current->next = new_env;
+		current->next = new_env;
 	return (0);
 }
+	// free current->next if it exists
 
 int	handle_unset(t_env **env, char *key)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/12 11:49:10 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/12 19:00:16 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ int	handle_pwd(void)
 	return (-1);
 }
 
-
-
 int	handle_exit(void)
 {
 	exit(0);
@@ -56,32 +54,23 @@ int	exec_builtins(char **commands, char **envp)
 		return (handle_pwd());
 	if (ft_strcmp(commands[0], "echo") == 0)
 		return (handle_echo(commands));
-	// if (ft_strcmp(commands[0], "export") == 0)
-	// 	return (handle_export(commands));
-	// if (ft_strcmp(commands[0], "unset") == 0)
-	// 	return (handle_unset(commands));
+	if (ft_strcmp(commands[0], "export") == 0)
+		return (handle_export(envp, commands[1], commands[2]));
+	if (ft_strcmp(commands[0], "unset") == 0)
+		return (handle_unset(envp, commands[1]));
 	if (ft_strcmp(commands[0], "env") == 0)
 		return (handle_env(envp));
 	if (ft_strcmp(commands[0], "exit") == 0)
 		return (handle_exit());
-	// else
-	// 	return (find_and_exec(commands));
-	
 	printf("Commande '%s' non reconnue comme builtin\n", commands[0]);
-	return (0);
+	return (find_and_exec(commands));
 }
 
+// creer liste chainee de l'environnement
 int	exec(char **commands, char **envp)
 {
 	int	i;
 
-	if (!commands || !commands[0])
-	{
-		printf("Aucune commande reçue, lancement des tests automatiques...\n");
-		run_test_commands(envp);
-		return (0);
-	}
-	printf("Exécution de: ");
 	i = 0;
 	while (commands[i])
 	{
@@ -92,17 +81,17 @@ int	exec(char **commands, char **envp)
 	return (exec_builtins(commands, envp));
 }
 
-void	run_test_commands(char **envp)
-{
-	char	*test1[] = {"env", NULL};
-	char	*test2[] = {"exit", NULL};
+// void	run_test_commands(char **envp)
+// {
+// 	char	*test1[] = {"env", NULL};
+// 	char	*test2[] = {"exit", NULL};
 
 
-	printf("=== TESTS DE COMMANDES SIMPLIFIES ===\n");
-	printf("\n--- Test 1: echo -n ---\n");
-	exec(test1, envp);
-	// printf("--- Test 2: exit ---\n");
-	exec(test2, envp);
+// 	printf("=== TESTS DE COMMANDES SIMPLIFIES ===\n");
+// 	printf("\n--- Test 1: echo -n ---\n");
+// 	exec(test1, envp);
+// 	// printf("--- Test 2: exit ---\n");
+// 	exec(test2, envp);
 	
-	printf("\n=== FIN DES TESTS ===\n");
-}
+// 	printf("\n=== FIN DES TESTS ===\n");
+// }
