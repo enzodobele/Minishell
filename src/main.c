@@ -128,7 +128,7 @@ int main(int argc, char *argv[], char **envp)
    			i++;
   			tmp_token = tmp_token->next;
 		}
-		run_test_commands(envp);
+		// run_test_commands(envp);
 		free(input);
 		ft_tokenlstclear(&token);
 	}
