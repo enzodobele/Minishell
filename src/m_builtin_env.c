@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_builtin_env.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 11:48:41 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/12 12:05:36 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/12 12:40:08 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,17 @@ int	handle_unset(t_env **env, char *key)
 	return (0);
 }
 
-int	handle_env(char **envp)
+int	handle_env(t_env **envp)
 {
-	int	i;
+	t_env	*current;
 
-	i = 0;
-	while (envp[i])
+	if (!envp || !*envp)
+		return (0);
+	current = *envp;
+	while (current)
 	{
-		printf("%s\n", envp[i]);
-		i++;
+		printf("%s=%s\n", current->key, current->value);
+		current = current->next;
 	}
 	return (0);
 }
