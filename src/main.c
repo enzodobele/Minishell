@@ -1,8 +1,12 @@
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_interrupted = 0;
+
 void	handle_sigint(int signum)
 {
 	(void)signum;
+
+	g_interrupted = 1;
 	write(1, "\n", 1);
     rl_replace_line("", 0); // del la lign de l'historique
 	rl_on_new_line(); // dit a l'histo qu'on est sur une newline
@@ -53,7 +57,6 @@ int	has_leading_pipe(char *input)
 		i++;
 	if (input[i] == '|' && input[i + 1] && input[i + 1] == '|')
 	{
-		add_history(input);
 		printf("Minishell : syntax error near unexpected token `||'\n");
 		return (1);
 	}
@@ -67,10 +70,10 @@ int	has_leading_pipe(char *input)
 }
 int main(void)
 {
-    char    *input;
-	t_token *token;
-	char 	*next_line;
-	char 	*joined;
+    char    	*input;
+	t_token 	*token;
+	char 		*next_line;
+	char		*joined;
 
 	token = NULL;
     signal(SIGINT, handle_sigint); // gère ctrl-c
@@ -83,7 +86,7 @@ int main(void)
 			write(1, "exit\n", 5);
 			break;
 		}
-		if (has_leading_pipe(input) || is_input_valid(input))
+		if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
 		{
 			add_history(input);
 			free(input);
@@ -92,10 +95,18 @@ int main(void)
 		while (has_unclosed_quotes(input) || has_trailing_pipe(input))
 		{
 			next_line = readline("> ");
+			if (g_interrupted)
+  			{
+        		free(input);
+    			input = ft_strdup("", 0, 0);
+    			g_interrupted = 0;
+    			break;
+    		}
 			if (!next_line)
 			{
 				free(input);
-				break;
+				input = ft_strdup("", 0, 0);
+				continue;
 			}
 			joined = ft_strjoin(input, "\n");
 			free(input);
@@ -103,6 +114,8 @@ int main(void)
 			free(joined);
 			free(next_line);
 		}
+		if (!input)
+			continue;
 		if (!tokenizer(input, &token, 0))
 		{
 			free(input);
@@ -115,20 +128,7 @@ int main(void)
 			ft_tokenlstclear(&token);
 			continue;
 		}
-		t_token *tmp_token = token;
-		int i = 0;
-		while (tmp_token)
-		{
-   			if (tmp_token->string)
-			{
-				printf("token n° %d : %s\n", i, tmp_token->string);
-				printf("type: %d + %d\n",tmp_token->type, tmp_token->quote_type);
-				}
-			else
-    			printf("token n° %d : (null string)\n", i);
-   			i++;
-			tmp_token = tmp_token->next;
-		}
+		test_parsing(token);
 		add_history(input);
 		if (input)
 			free(input);
