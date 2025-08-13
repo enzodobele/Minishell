@@ -123,5 +123,6 @@ void	test_parsing(t_token *token)
 	}
 	printf("\n✅ Total commands: %d\n", cmd_count - 1);
 	printf("=====================\n");
+
 	free_command_chain(&commands);
 }
