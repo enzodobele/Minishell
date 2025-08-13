@@ -69,16 +69,20 @@ int	has_leading_pipe(char *input)
 	}
 	return (0);
 }
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char **envp)
 {
     char    	*input;
 	t_token 	*token;
 	char 		*next_line;
 	char		*joined;
 	t_command	*cmd;
+	t_env		*env;
 
-	if (argv[argc - 1][0] == '-')
-		printf("bouh");
+	env = NULL;
+	env = extract_env(envp, &env);
+	// pour éviter l’avertissement de variable non utilisée
+    (void)argc;
+    (void)argv;
 
 	token = NULL;
 	cmd = NULL;
@@ -89,7 +93,7 @@ int main(int argc, char *argv[])
 		input = readline("minishell$ ");
 		if (!input)
 		{
-			write(1, "exit\n", 5);
+			// write(1, "exit\n", 5);
 			break;
 		}
 			if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
@@ -136,11 +140,14 @@ int main(int argc, char *argv[])
 			}
 			test_parsing(token);
 			cmd = parse_tokens(token);
+			exec(cmd, &env, &token);
 			add_history(input);
 			if (input)
 				free(input);
 			if (token)
 				ft_tokenlstclear(&token);
 		}
+		clear_env(&env);
+
 		return (0);
 	}

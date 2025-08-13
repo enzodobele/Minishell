@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_builtin_cd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 22:24:54 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/10 00:21:54 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/13 14:33:59 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	cd_to_oldpwd(void);
 static int	cd_expand_tilde(char *path);
 static void	update_directories(char *old_cwd);
 
-int	handle_cd(char **commands)
+int	handle_cd(t_command *command)
 {
 	char	*path;
 	char	cwd[PATH_MAX];
@@ -25,11 +25,12 @@ int	handle_cd(char **commands)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 		return (-1);
-	if (!commands[1] || commands[1][0] == '\0')
+	if (!command->args || !command->args[0] || !command->args[0]->string ||
+		command->args[0]->string[0] == '\0')
 		result = cd_to_home();
 	else
 	{
-		path = commands[1];
+		path = command->args[0]->string;
 		if (ft_strcmp(path, "~") == 0)
 			result = cd_to_home();
 		else if (ft_strcmp(path, "-") == 0)
