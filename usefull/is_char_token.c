@@ -2,6 +2,6 @@
 
 int	is_special_char(char c)
 {
-	return (c == '<' || c == '>' || c == '|' || c == '$'
+	return (c == '<' || c == '>' || c == '|'
 		|| c == '"' || c == '\'' || c == ' ');
 }

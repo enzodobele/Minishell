@@ -89,7 +89,5 @@ char	*get_token_symbol(t_token_type type)
 		return ("<<");
 	else if (type == LOGICAL_OR)
 		return ("||");
-	else if (type == VAR)
-		return ("$");
 	return ("unknown");
 }

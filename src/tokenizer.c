@@ -58,8 +58,6 @@ int	is_char_symbol(char *input, t_token **token, int i)
 		return (is_less_than_symbol(token, input, i));
 	else if (input[i] == '>')
 		return (is_greater_than_symbol(token, input, i));
-	else if (input[i] == '$')
-		return (is_dollard(token, input, i));
 	else if (input[i] == '\'')
 		return (is_single_quote(token, input, i));
 	else if (input[i] == '"')

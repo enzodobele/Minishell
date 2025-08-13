@@ -116,4 +116,31 @@ int	add_new_token_symbol_solo(t_token_type symbol, int i, t_token **token, char 
 	new_token->next = NULL;
 	ft_lstadd_back(token, new_token);
 	return (1);
+}
+int	is_dollard(t_token **token, char *input, int i)
+{
+	t_token_data	data;
+	int				start;
+
+	if (input[i] == '$')
+	{
+		start = i++;
+		if (input[i] == '?')
+			i++;
+		else if (ft_isalpha(input[i]) || input[i] == '_')
+		{
+			while (ft_isalnum(input[i]) || input[i] == '_')
+				i++;
+		}
+		else if (ft_isdigit(input[i]))
+			i++;
+		data.start = start;
+		data.len = i - start;
+		data.type = VAR;
+		data.quote = NO_WORD;
+		if (!create_token(data, input, token))
+			return (0);
+		return (i - start);
+	}
+	return (0);
 }*/

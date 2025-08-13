@@ -29,15 +29,12 @@ SRC = \
 	token_check_syntaxe.c \
 	m_exec.c \
 	m_debug.c \
-<<<<<<< HEAD
 	m_builtin_cd.c \
 	m_builtin_env.c \
-=======
 	test_parsing.c \
 	create_command.c \
-	../usefill/free_command.c \
-	../usefull/ft_lst_add_back_command.c \
->>>>>>> parsing
+	free_command.c \
+	ft_lst_add_back_command.c \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \

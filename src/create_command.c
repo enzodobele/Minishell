@@ -117,18 +117,21 @@ t_command	*parse_tokens(t_token *token)
 	prev_token = NULL;
 	while (token)
 	{
-		if (token->type == WORD || token->type == VAR)
+		if (token->type == WORD)
 		{
 			if (state == EXPECTING_CMD)
 			{
-				current_cmd = create_new_command(token);
+				if (!current_cmd)
+					current_cmd = create_new_command(token);
 				if (!current_cmd)
 					return (handle_parsing_error(&commands, current_cmd));
 				state = EXPECTING_CMD_OR_ARG;
 			}
 			else if (state == EXPECTING_CMD_OR_ARG)
 			{
-				if (!add_argument(current_cmd, token))
+				if (!current_cmd -> cmd)
+					current_cmd -> cmd = token;
+				else if (!add_argument(current_cmd, token))
 					return (handle_parsing_error(&commands, current_cmd));
 			}
 			else if (state == EXPECTING_FILE)
@@ -138,6 +141,12 @@ t_command	*parse_tokens(t_token *token)
 				state = EXPECTING_CMD_OR_ARG;
 			}
 		}
+		else if (is_redirection_token(token->type))
+        {
+            if (!current_cmd)
+                current_cmd = create_new_command(NULL);
+            state = EXPECTING_FILE;
+        }
 		else if (token->type == PIPE)
 		{
 			if (current_cmd)
@@ -145,17 +154,11 @@ t_command	*parse_tokens(t_token *token)
 				current_cmd->pipe_out = 1;
 				ft_lstadd_back_command(&commands, current_cmd);
 			}
-			current_cmd = create_new_command(NULL);
-			if (!current_cmd)
-				return (handle_parsing_error(&commands, current_cmd));
+			current_cmd = NULL;
 			if (token->next && is_redirection_token(token->next->type))
 				state = EXPECTING_FILE;
 			else
 				state = EXPECTING_CMD;
-		}
-		else if (is_redirection_token(token->type))
-		{
-			state = EXPECTING_FILE;
 		}
 		prev_token = token;
 		token = token->next;

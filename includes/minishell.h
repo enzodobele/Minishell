@@ -29,7 +29,6 @@ typedef enum e_token_type
 	REDIR_OUT, // >
 	REDIR_APPEND, // >>
 	HEREDOC, // <<
-	VAR, // $
 }	t_token_type;
 
 typedef enum e_quote_type

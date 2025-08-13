@@ -16,8 +16,6 @@ char	*get_token_type_str(t_token_type type)
 		return ("REDIR_APPEND");
 	else if (type == HEREDOC)
 		return ("HEREDOC");
-	else if (type == VAR)
-		return ("VAR");
 	else
 		return ("UNKNOWN");
 }
