@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/12 19:00:16 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:52:38 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,10 @@ int	exec_builtins(char **commands, char **envp)
 // creer liste chainee de l'environnement
 int	exec(char **commands, char **envp)
 {
-	int	i;
+	int		i;
+	t_env	*env;
 
+	env = extract_env(envp);
 	i = 0;
 	while (commands[i])
 	{

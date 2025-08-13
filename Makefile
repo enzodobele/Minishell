@@ -27,7 +27,12 @@ SRC = \
 	tokenizer.c \
 	type_token.c \
 	token_check_syntaxe.c \
+	test_parsing.c \
+	create_command.c \
+	free_command.c \
+	ft_lst_add_back_command.c \
 	m_exec.c \
+	m_env.c \
 	m_debug.c \
 	m_builtin_cd.c \
 	m_builtin_env.c \

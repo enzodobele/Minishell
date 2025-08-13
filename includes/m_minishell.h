@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_minishell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/12 11:50:49 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/13 12:24:05 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }	t_env;
+
+t_env	*extract_env(char **envp);
 
 int		handle_export(t_env **env, char *key, char *value);
 int		handle_unset(t_env **env, char *key);
