@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int	tokenizer(char *input, t_token **token, int i)
 {
@@ -7,10 +7,11 @@ int	tokenizer(char *input, t_token **token, int i)
 
 	while (input[i])
 	{
-		while (input[i] == ' ')
+		while (input [i] && (input[i] == ' ' || input[i] == '\n' || input[i] == '\t'))
 			i++;
 		start = i;
-		while (input[i] && !is_special_char(input[i]))
+		while (input[i] && !is_special_char(input[i]) &&
+			input[i] != ' ' && input[i] != '\n' && input[i] != '\t')
 			i++;
 		if (i > start)
 		{
@@ -57,8 +58,6 @@ int	is_char_symbol(char *input, t_token **token, int i)
 		return (is_less_than_symbol(token, input, i));
 	else if (input[i] == '>')
 		return (is_greater_than_symbol(token, input, i));
-	else if (input[i] == '$')
-		return (is_dollard(token, input, i));
 	else if (input[i] == '\'')
 		return (is_single_quote(token, input, i));
 	else if (input[i] == '"')

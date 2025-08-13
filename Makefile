@@ -31,6 +31,10 @@ SRC = \
 	m_debug.c \
 	m_builtin_cd.c \
 	m_builtin_env.c \
+	test_parsing.c \
+	create_command.c \
+	free_command.c \
+	ft_lst_add_back_command.c \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \
