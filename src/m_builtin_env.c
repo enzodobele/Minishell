@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 11:48:41 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/13 17:32:31 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/13 18:00:49 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static void	parse_export_arg(t_command *command, char **key, char **value,
 	*key = NULL;
 	*value = NULL;
 	*kval = NULL;
-
 	if (command && command->args && command->args[0]
 		&& command->args[0]->string)
 	{

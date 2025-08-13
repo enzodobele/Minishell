@@ -5,11 +5,10 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/08/13 17:33:03 by mzimeris         ###   ########.fr       */
+/*   Created: 2025/08/13 17:58:45 by mzimeris          #+#    #+#             */
+/*   Updated: 2025/08/13 18:06:20 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef M_MINISHELL_H
 # define M_MINISHELL_H
@@ -42,6 +41,7 @@ void	debug_print_all_tokens(t_token *token);
 
 int		exec(t_command *commands, t_env **env, t_token **token);
 int		exec_builtins(t_command *commands, t_env **env, t_token **token);
+// int		exec_system(t_command *command, t_env **env, t_token **token);
 
 int		handle_pwd(void);
 int		handle_cd(t_command *command);
@@ -50,6 +50,5 @@ void	run_test_commands(char **envp);
 
 void	free_splitted(char **splitted);
 char	**ft_split(const char *s, char c);
-
 
 #endif /* M_MINISHELL_H */

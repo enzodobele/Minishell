@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 22:24:54 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/13 14:33:59 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/13 18:00:23 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	handle_cd(t_command *command)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 		return (-1);
-	if (!command->args || !command->args[0] || !command->args[0]->string ||
-		command->args[0]->string[0] == '\0')
+	if (!command->args || !command->args[0] || !command->args[0]->string
+		|| command->args[0]->string[0] == '\0')
 		result = cd_to_home();
 	else
 	{
