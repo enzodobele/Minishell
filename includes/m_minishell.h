@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 11:36:48 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 11:51:23 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	char			**path;
+	char			**envp;
 	struct s_env	*next;
 }	t_env;
 

@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 11:38:20 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 11:51:46 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	exec_system(t_command *cmd, t_env **env, t_token **token, int in_fd)
 		return (printf("Command '%s' not found\n", cmd->cmd->string), 127);
 	pipe_fd[0] = -1;
 	pipe_fd[1] = -1;
-	if (cmd->pipe_out != NULL && pipe(pipe_fd) < 0)
+	if (cmd->pipe_out && pipe(pipe_fd) < 0)
 		return (-1);
 	pid = fork();
 	if (pid < 0)
