@@ -35,6 +35,8 @@ SRC = \
 	create_command.c \
 	free_command.c \
 	ft_lst_add_back_command.c \
+	handler_token.c \
+	handler_token_2.c \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \

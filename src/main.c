@@ -75,13 +75,11 @@ int main(int argc, char *argv[])
 	t_token 	*token;
 	char 		*next_line;
 	char		*joined;
-	t_command	*cmd;
 
 	if (argv[argc - 1][0] == '-')
 		printf("bouh");
 
 	token = NULL;
-	cmd = NULL;
     signal(SIGINT, handle_sigint); // gère ctrl-c
     signal(SIGQUIT, SIG_IGN); // gère ctrl-/
     while (1)
@@ -135,7 +133,6 @@ int main(int argc, char *argv[])
 				continue;
 			}
 			test_parsing(token);
-			cmd = parse_tokens(token);
 			add_history(input);
 			if (input)
 				free(input);
