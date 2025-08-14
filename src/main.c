@@ -75,7 +75,10 @@ int main(int argc, char *argv[], char **envp)
 	t_token 	*token;
 	char 		*next_line;
 	char		*joined;
+	t_command	*cmd;
+	t_env		*env;
 
+	cmd = NULL;
 	env = NULL;
 	env = extract_env(envp, &env);
 	// pour éviter l’avertissement de variable non utilisée
@@ -143,8 +146,10 @@ int main(int argc, char *argv[], char **envp)
 				free(input);
 			if (token)
 				ft_tokenlstclear(&token);
-		}
+			if (cmd)
+				free_command_chain(&cmd);
 		clear_env(&env);
 
 		return (0);
 	}
+}
