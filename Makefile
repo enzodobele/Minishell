@@ -22,6 +22,10 @@ LIBFT = \
 	is_char_token.c \
 	ft_strcmp.c \
 	ft_split.c \
+	ft_strlcpy.c \
+	ft_strlcat.c \
+	ft_strchr.c \
+	ft_strncmp.c \
 
 SRC = \
 	main.c \
@@ -41,6 +45,7 @@ SRC = \
 	m_builtin_env.c \
 	m_env_utils.c \
 	m_builtin.c \
+	m_command_validation.c \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \

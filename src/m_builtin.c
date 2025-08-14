@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 17:36:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/13 18:06:42 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 11:37:28 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,7 @@ int	exec_builtins(t_command *command, t_env **env, t_token **token)
 		return (handle_env(*env));
 	if (ft_strcmp(command->cmd->string, "exit") == 0)
 		return (handle_exit(command, env, token));
-	// else
-	// 	return (exec_system(command, env, token));
-	printf("Commande '%s' non reconnue comme builtin\n", command->cmd->string);
-	return (36);
+	else
+		return (exec_system(command, env, token));
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/13 18:13:38 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 11:36:48 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 
 # include "minishell.h"
 # include <linux/limits.h>
+# include <unistd.h>
 
 typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	char			**path;
 	struct s_env	*next;
 }	t_env;
 
@@ -46,9 +48,16 @@ int		exec_builtins(t_command *commands, t_env **env, t_token **token);
 int		handle_pwd(void);
 int		handle_cd(t_command *command);
 
+// Command validation
+int		check_command(t_env *env, t_command *cmd);
+
 void	run_test_commands(char **envp);
 
 void	free_splitted(char **splitted);
 char	**ft_split(const char *s, char c);
+size_t	ft_strlcat(char *dst, const char *src, size_t dsize);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dsize);
+char	*ft_strchr(const char *s, int c);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif /* M_MINISHELL_H */
