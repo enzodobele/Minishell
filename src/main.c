@@ -149,14 +149,6 @@ int main(int argc, char *argv[], char **envp)
 			if (cmd)
 				free_command_chain(&cmd);
 		clear_env(&env);
+
 		return (0);
 	}
-	if (input)
-		free(input);
-	if (token)
-		ft_tokenlstclear(&token);
-	if (cmd)
-		free_command_chain(&cmd);
-	clear_env(&env);
-	return (0);
-}
