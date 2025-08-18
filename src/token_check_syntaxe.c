@@ -42,7 +42,12 @@ int	is_redirection_syntax_valid(char *input)
 			if (input[i] == '|')
 				return (printf("minishell: syntax error near unexpected token `|'\n"), 1);
 			if (input[i] == '>' || input[i] == '<')
-				return (printf("minishell: syntax error near unexpected token `%c'\n", input[i]), 1);
+			{
+				if (input[i + 1] && input[i + 1] == input[i])
+					return (printf("minishell: syntax error near unexpected token `%c%c'\n", input[i], input[i]), 1);
+				else
+					return (printf("minishell: syntax error near unexpected token `%c'\n", input[i]), 1);
+			}
 		}
 		else
 			i++;
