@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 15:58:15 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 18:33:11 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,10 @@ int	handle_pwd(void)
 	return (0);
 }
 
-int	handle_exit(t_command *command, t_env **env, t_token **token)
+int	handle_exit(t_command *command, t_env **env)
 {
 	clear_env(env);
 	free_command_chain(&command);
-	ft_tokenlstclear(token);
 	exit(0);
 }
 

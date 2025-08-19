@@ -141,7 +141,7 @@ int main(int argc, char *argv[], char **envp)
 			}
 			test_parsing(token);
 			cmd = parse_tokens(token);
-			exec(cmd, &env, &token);
+			exec_system(cmd, &env, NULL);
 			add_history(input);
 			if (input)
 				free(input);

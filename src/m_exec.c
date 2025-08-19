@@ -6,118 +6,106 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 16:38:31 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 19:03:51 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "m_minishell.h"
 
-// il faut que je voie comment je sais si je suis a la dernière commande
-// int	exec_child(t_command *cmd, int in_fd, int pipe_fd[2])
-// {
-// 	int	check_result;
-
-// 	setup_input_redirect(in_fd);
-// 	if (setup_output_redirect(cmd, pipe_fd, cmd->outfile) < 0)
-// 		check_result = check_command(pipex, pipex->cmds[i][0], i);
-// 	handle_command_error(pipex, check_result, i);
-// 	execve(pipex->cmds[i][0], pipex->cmds[i], pipex->envp);
-// 	perror("execve");
-// 	free_pipex(pipex);
-// 	exit(127);
-// }
-
-// int	wait_for_children(pid_t last_pid)
-// {
-// 	int		status;
-// 	int		last_exit_status;
-// 	int		sig;
-// 	pid_t	waited_pid;
-
-// 	last_exit_status = 0;
-// 	waited_pid = wait(&status);
-// 	while (waited_pid > 0)
-// 	{
-// 		if (waited_pid == last_pid)
-// 		{
-// 			if (WIFEXITED(status))
-// 				last_exit_status = WEXITSTATUS(status);
-// 			else if (WIFSIGNALED(status))
-// 			{
-// 				sig = WTERMSIG(status);
-// 				if (sig != SIGPIPE)
-// 					last_exit_status = 128 + sig;
-// 			}
-// 		}
-// 		waited_pid = wait(&status);
-// 	}
-// 	return (last_exit_status);
-// }
-
-// int	exec_system(t_command *cmd, t_env **env, t_token **token, int in_fd)
-// {
-// 	int	pid;
-// 	int	pipe_fd[2];
-
-// 	in_fd = 1;
-
-// 	if (check_command(*env, cmd) < 0)
-// 		return (printf("Command '%s' not found\n", cmd->cmd->string), 127);
-// 	pipe_fd[0] = -1;
-// 	pipe_fd[1] = -1;
-// 	if (cmd->pipe_out && pipe(pipe_fd) < 0)
-// 		return (-1);
-// 	pid = fork();
-// 	if (pid < 0)
-// 		return (-1); // Fork failed
-// 	if (pid == 0)
-// 		return (execve(cmd->cmd->string, cmd->args, *env));
-// 		// return (exec_child(cmd, in_fd, pipe_fd));
-// 	// pipex->last_pid = pid;
-// 	if (in_fd > 0)
-// 		close(in_fd);
-// 	if (cmd->next->cmd != NULL)
-// 		return (close(pipe_fd[1]), pipe_fd[0]);
-// 	return (0);
-// }
-
-char	*build_argv(t_command *cmd)
+char	**build_argv(t_command *cmd)
 {
 	char	**argv;
 	int		i;
 	int		arg_count;
-	t_token	*current;
-
-	current = cmd->args[0];
-	while (cmd && cmd->args)
 
 	if (!cmd)
 		return (NULL);
-	argv = malloc(sizeof(char *) * (cmd->arg_count + 1));
+	arg_count = 0;
+	while (cmd && cmd->args && cmd->args[arg_count])
+		arg_count++;
+	argv = malloc(sizeof(char *) * (arg_count + 2));
 	if (!argv)
 		return (NULL);
+	argv[0] = cmd->cmd->string;
 	i = 0;
-	while (i < cmd->arg_count)
+	while (i < arg_count)
 	{
-		argv[i] = cmd->args[i]->string;
+		argv[i + 1] = cmd->args[i]->string;
 		i++;
 	}
-	argv[i] = NULL;
+	argv[arg_count + 1] = NULL;
 	return (argv);
 }
 
-int	exec_system(t_command *command, t_env **env)
+int	exec_child(t_env **env, t_command *command, int in_fd, int pipe_fd[2], char *outfile)
 {
-	if (!command || !command->cmd)
+	int		check_result;
+	char	**argv;
+
+	if (!command || !command->cmd || !command->cmd->string)
+		return (-1);
+	argv = build_argv(command);
+	if (!argv)
+		return (-1);
+	check_result = check_command(*env, command);
+	if (check_result < 0)
+	{
+		if (in_fd > 0)
+			close(in_fd);
+		if (pipe_fd[0] > 0)
+			close(pipe_fd[0]);
+		if (pipe_fd[1] > 0)
+			close(pipe_fd[1]);
+	}
+	handle_command_error(command, check_result);
+	setup_input_redirect(in_fd);
+	if (setup_output_redirect(command, pipe_fd, outfile))
+	{
+		exit(1);
+	}
+	if (!exec_builtins(command, env))
+		execve(command->cmd->string, argv, (*env)->envp);
+	perror("execve");
+	exit(127);
+}
+
+int	fork_and_exec(t_env **env, t_command *command, int in_fd, char *outfile)
+{
+	int	pid;
+	int	pipe_fd[2];
+
+	pipe_fd[0] = -1;
+	pipe_fd[1] = -1;
+	if (command->next != NULL && pipe(pipe_fd) < 0)
+		return (handle_system_error("Pipe creation failed"), -1);
+	pid = fork();
+	if (pid < 0)
+		return (handle_system_error("Fork failed"), -1);
+	if (pid == 0)
+		return (exec_child(env, command, in_fd, pipe_fd, outfile));
+	(*env)->last_pid = pid;
+	if (in_fd > 0)
+		close(in_fd);
+	if (command->next != NULL)
+		return (close(pipe_fd[1]), pipe_fd[0]);
+	return (0);
+}
+
+int	exec_system(t_command *command, t_env **env, char *outfile)
+{
+	if (!command || !command->cmd || !command->cmd->string)
 		return (0);
-	if (check_command(*env, command) < 0)
-		perror("command not found");
-	execve(command->cmd->string, command->args, (*env)->envp);
-	perror("execve failed");
+	while (command)
+	{
+		if (check_command(*env, command) < 0)
+			perror("command not found");
+		fork_and_exec(env, command, -1, outfile);
+		command = command->next;
+	}
 	return (-1);
 }
 
-int	exec_builtins(t_command *command, t_env **env, t_token **token)
+int	exec_builtins(t_command *command, t_env **env)
 {
 	if (!command || !command->cmd)
 		return (0);
@@ -136,30 +124,27 @@ int	exec_builtins(t_command *command, t_env **env, t_token **token)
 	if (ft_strcmp(command->cmd->string, "env") == 0)
 		return (handle_env(*env));
 	if (ft_strcmp(command->cmd->string, "exit") == 0)
-		return (handle_exit(command, env, token));
-	// printf("Minishell: command '%s' not found\n", command->cmd->string);
-	else
-		return (exec_system(command, env));
+		return (handle_exit(command, env));
 	return (0);
 }
 
-int	exec(t_command *commands, t_env **env, t_token **token)
-{
-	t_command	*current;
+// int	exec(t_command *commands, t_env **env, t_token **token)
+// {
+// 	t_command	*current;
 
-	if (!commands)
-		return (0);
-	current = commands;
-	while (current)
-	{
-		if (!current->cmd)
-		{
-			printf("Error: command is NULL (should not happen)\n");
-			current = current->next;
-			continue ;
-		}
-		exec_builtins(current, env, token);
-		current = current->next;
-	}
-	return (0);
-}
+// 	if (!commands)
+// 		return (0);
+// 	current = commands;
+// 	while (current)
+// 	{
+// 		if (!current->cmd)
+// 		{
+// 			printf("Error: command is NULL (should not happen)\n");
+// 			current = current->next;
+// 			continue ;
+// 		}
+// 		exec_builtins(current, env, token);
+// 		current = current->next;
+// 	}
+// 	return (0);
+// }
