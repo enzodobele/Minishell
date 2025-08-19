@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   token_check_syntaxe.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/14 17:57:31 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/14 17:57:38 by mzimeris         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int	is_token_valid(t_token *token)
 {
@@ -24,12 +12,10 @@ int	is_token_valid(t_token *token)
 			if (token -> type == LOGICAL_OR)
 				return (printf("LOGICAL OR not handled\n"), 0);
 			if (next_token -> type == PIPE)
-				return (printf("Minishell: 
-					syntax error near unexpected token `|'\n"), 0);
+				return (printf("Minishell: syntax error near unexpected token `|'\n"), 0);
 		}
 		if (token -> type == REDIR_IN && next_token -> type == PIPE)
-			return (printf("Minishell: 
-				syntax error near unexpected token `|'"), 0);
+			return (printf("Minishell: syntax error near unexpected token `|'"), 0);
 		token = token -> next;
 	}
 	return (1);
@@ -52,14 +38,16 @@ int	is_redirection_syntax_valid(char *input)
 			while (input[i] && (input[i] == ' ' || input[i] == '\t'))
 				i++;
 			if (input[i] == '\0')
-				return (printf("minishell: 
-					syntax error near unexpected token `newline'\n"), 1);
+				return (printf("minishell: syntax error near unexpected token `newline'\n"), 1);
 			if (input[i] == '|')
-				return (printf("minishell: 
-					syntax error near unexpected token `|'\n"), 1);
+				return (printf("minishell: syntax error near unexpected token `|'\n"), 1);
 			if (input[i] == '>' || input[i] == '<')
-				return (printf("minishell: 
-					syntax error near unexpected token `%c'\n", input[i]), 1);
+			{
+				if (input[i + 1] && input[i + 1] == input[i])
+					return (printf("minishell: syntax error near unexpected token `%c%c'\n", input[i], input[i]), 1);
+				else
+					return (printf("minishell: syntax error near unexpected token `%c'\n", input[i]), 1);
+			}
 		}
 		else
 			i++;
@@ -79,8 +67,7 @@ int	is_redirection_valid(t_token *token)
 		{
 			if (!current->next)
 			{
-				printf("minishell: 
-					syntax error near unexpected token `newline'\n");
+				printf("minishell: syntax error near unexpected token `newline'\n");
 				return (0);
 			}
 			if (current->next->type != WORD)

@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   type_token.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/14 17:57:57 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/14 17:57:58 by mzimeris         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int	is_less_than_symbol(t_token **token, char *input, int i)
 {
@@ -67,7 +55,6 @@ int	is_greater_than_symbol(t_token **token, char *input, int i)
 	}
 	return (0);
 }
-
 
 int	is_single_quote(t_token **token, char *input, int i)
 {
