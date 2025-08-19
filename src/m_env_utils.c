@@ -12,6 +12,22 @@
 
 #include "m_minishell.h"
 
+char	*get_env_value(t_env **env, const char *key)
+{
+	t_env	*current;
+
+	if (!env || !*env || !key)
+		return (NULL);
+	current = *env;
+	while (current)
+	{
+		if (ft_strcmp(current->key, key) == 0)
+			return (current->value);
+		current = current->next;
+	}
+	return (NULL);
+}
+
 int	print_export(t_env **env)
 {
 	t_env	*current;

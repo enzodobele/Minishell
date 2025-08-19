@@ -28,6 +28,8 @@ void	clear_env(t_env **env);
 void	add_env_node(t_env **env, t_env *node);
 void	remove_env_node(t_env **env, t_env *node);
 void	create_env_node(t_env **env, char *key, char *value);
+char	*get_env_value(t_env **env, const char *key);
+
 
 int		handle_export(t_env **env, t_command *command);
 int		handle_unset(t_env **env, t_command *command);
