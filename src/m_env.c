@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:30:09 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 13:57:49 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 16:10:26 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,12 @@ t_env	*extract_env(char **envp, t_env **env)
 
 	if (!envp || !*envp)
 		return (NULL);
-
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
 		return (NULL);
 	new_env->path = NULL;
 	new_env->env_list = NULL;
+	new_env->envp = envp;
 	while (*envp)
 	{
 		line = ft_strdup(*envp, ft_strlen(*envp), 0);
@@ -113,92 +113,6 @@ t_env	*extract_env(char **envp, t_env **env)
 	return (new_env);
 }
 
-int	print_export(t_env **env)
-{
-	t_env_node	*current;
 
-	if (!env || !*env)
-		return (0);
-	current = (*env)->env_list;
-	while (current)
-	{
-		if (current->value)
-			printf("declare -x %s=\"%s\"\n", current->key, current->value);
-		else
-			printf("declare -x %s\n", current->key);
-		current = current->next;
-	}
-	return (0);
-}
 
-static void	del_env_node(t_env_node *node)
-{
-	if (!node)
-		return ;
-	free(node->key);
-	free(node->value);
-	free(node);
-}
 
-void	remove_env_node(t_env **env, t_env_node *node)
-{
-	t_env_node	*current;
-	t_env_node	*prev_node;
-
-	if (!env || !*env || !node)
-		return ;
-	current = (*env)->env_list;
-	if (current && ft_strcmp(current->key, node->key) == 0)
-	{
-		(*env)->env_list = current->next;
-		del_env_node(current);
-		return ;
-	}
-	prev_node = NULL;
-	while (current && ft_strcmp(current->key, node->key) != 0)
-	{
-		prev_node = current;
-		current = current->next;
-	}
-	if (current && ft_strcmp(current->key, node->key) == 0)
-	{
-		prev_node->next = current->next;
-		del_env_node(current);
-	}
-}
-
-void	clear_env(t_env **env)
-{
-	t_env_node	*current;
-	t_env_node	*tmp;
-
-	if (!env || !*env)
-		return ;
-	current = (*env)->env_list;
-	while (current)
-	{
-		tmp = current;
-		current = current->next;
-		del_env_node(tmp);
-	}
-	if ((*env)->path)
-		free_splitted((*env)->path);
-	free(*env);
-	*env = NULL;
-}
-
-t_env_node	*get_env(t_env *env, const char *key)
-{
-	t_env_node	*current;
-// printf("get_env called with key: %s\n", key);
-	if (!env || !key)
-		return (NULL);
-	current = env->env_list;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-			return (current);
-		current = current->next;
-	}
-	return (NULL);
-}

@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 13:48:17 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:58:15 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,28 +50,4 @@ int	handle_exit(t_command *command, t_env **env, t_token **token)
 	exit(0);
 }
 
-int	exec_builtins(t_command *command, t_env **env, t_token **token)
-{
-	if (!command || !command->cmd)
-		return (0);
-	if (ft_strcmp(command->cmd->string, "cd") == 0)
-		return (handle_cd(env, command));
-	if (ft_strcmp(command->cmd->string, "pwd") == 0)
-		return (handle_pwd());
-	if (ft_strcmp(command->cmd->string, "echo") == 0
-		&& command->args && command->args[0]
-		&& ft_strcmp(command->args[0]->string, "-n") == 0)
-		return (handle_echo_n(command));
-	if (ft_strcmp(command->cmd->string, "export") == 0)
-		return (handle_export(env, command));
-	if (ft_strcmp(command->cmd->string, "unset") == 0)
-		return (handle_unset(env, command));
-	if (ft_strcmp(command->cmd->string, "env") == 0)
-		return (handle_env(*env));
-	if (ft_strcmp(command->cmd->string, "exit") == 0)
-		return (handle_exit(command, env, token));
-	printf("Minishell: command '%s' not found\n", command->cmd->string);
-	// else
-	// 	return (exec_system(command, env, token));
-	return (0);
-}
+

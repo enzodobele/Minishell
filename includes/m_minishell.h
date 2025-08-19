@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 14:05:01 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 16:12:28 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_env_node
 typedef struct s_env
 {
 	char				**path;
+	char				**envp;
 	struct s_env_node	*env_list;
 }	t_env;
 
@@ -39,26 +40,28 @@ t_env_node	*get_env(t_env *env, const char *key);
 
 int			handle_pwd(void);
 int			handle_cd(t_env **env, t_command *command);
-int			handle_export(t_env **env, t_command *command);
 int			handle_unset(t_env **env, t_command *command);
 int			handle_env(t_env *env);
+int			handle_echo_n(t_command *command);
+int			handle_exit(t_command *command, t_env **env, t_token **token);
+int			handle_echo_n(t_command *command);
+int			handle_export(t_env **env, t_command *command);
 int			print_export(t_env **env);
 
-int			handle_echo_n(t_command *command);
+int			exec(t_command *commands, t_env **env, t_token **token);
+int			exec_builtins(t_command *commands, t_env **env, t_token **token);
+int			exec_system(t_command *command, t_env **env);
+
+// Command validation
+int			check_command(t_env *env, t_command *cmd);
+
+
+
 
 void		debug_print_token(t_token *token);
 void		debug_print_all_tokens(t_token *token);
 void		debug_print_env(t_env *env);
 
-
-int			exec(t_command *commands, t_env **env, t_token **token);
-int			exec_builtins(t_command *commands, t_env **env, t_token **token);
-// int		exec_system(t_command *command, t_env **env, t_token **token);
-
-
-
-// Command validation
-int			check_command(t_env *env, t_command *cmd);
 
 void		run_test_commands(char **envp);
 
