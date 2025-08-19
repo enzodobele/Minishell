@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 17:36:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 11:37:28 by mzimeris         ###   ########.fr       */
+/*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
+/*   Updated: 2025/08/19 13:01:27 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ int	handle_echo_n(t_command *command)
 {
 	int	i;
 
-	i = 0;
-	while (command->args[1]->string
-		&& command->args[1]->string[i] != '\n'
-		&& command->args[1]->string[i] != '\0')
+	i = 2;
+	while (command->args[i])
 	{
-		write(1, &command->args[1]->string[i], 1);
+		write(1, command->args[i], ft_strlen(command->args[i]));
+		if (command->args[i + 1])
+			write(1, " ", 1);
 		i++;
 	}
 	return (0);

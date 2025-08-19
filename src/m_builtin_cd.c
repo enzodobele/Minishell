@@ -5,91 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 22:24:54 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/13 18:00:23 by mzimeris         ###   ########.fr       */
+/*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
+/*   Updated: 2025/08/19 13:00:00 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "m_minishell.h"
 
-static int	cd_to_home(void);
-static int	cd_to_oldpwd(void);
-static int	cd_expand_tilde(char *path);
-static void	update_directories(char *old_cwd);
+int	handle_pwd(void)
+{
+	char	*cwd;
 
-int	handle_cd(t_command *command)
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("pwd");
+		return (1);
+	}
+	printf("%s\n", cwd);
+	free(cwd);
+	return (0);
+}
+
+int	handle_cd(t_command *command, t_env **env)
 {
 	char	*path;
-	char	cwd[PATH_MAX];
-	int		result;
+	char	*home;
 
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-		return (-1);
-	if (!command->args || !command->args[0] || !command->args[0]->string
-		|| command->args[0]->string[0] == '\0')
-		result = cd_to_home();
+	if (!command->args[1])
+	{
+		home = get_env_value(*env, "HOME");
+		if (!home)
+		{
+			printf("cd: HOME not set\n");
+			return (1);
+		}
+		path = home;
+	}
 	else
+		path = command->args[1];
+	if (chdir(path) == -1)
 	{
-		path = command->args[0]->string;
-		if (ft_strcmp(path, "~") == 0)
-			result = cd_to_home();
-		else if (ft_strcmp(path, "-") == 0)
-			result = cd_to_oldpwd();
-		else if (path[0] == '~' && path[1] == '/')
-			result = cd_expand_tilde(path);
-		else
-			result = chdir(path);
+		perror("cd");
+		return (1);
 	}
-	if (result == 0)
-		update_directories(cwd);
-	return (result);
-}
-
-static int	cd_to_home(void)
-{
-	char	*home;
-
-	home = getenv("HOME");
-	if (!home)
-		return (-1);
-	return (chdir(home));
-}
-
-static int	cd_to_oldpwd(void)
-{
-	char	*oldpwd;
-
-	oldpwd = getenv("OLDPWD");
-	if (!oldpwd)
-		return (-1);
-	printf("%s\n", oldpwd);
-	return (chdir(oldpwd));
-}
-
-static int	cd_expand_tilde(char *path)
-{
-	char	*home;
-	char	*full_path;
-	int		result;
-
-	home = getenv("HOME");
-	if (!home)
-		return (-1);
-	full_path = ft_strjoin(home, path + 1);
-	if (!full_path)
-		return (-1);
-	result = chdir(full_path);
-	free(full_path);
-	return (result);
-}
-
-static void	update_directories(char *old_cwd)
-{
-	char	new_cwd[PATH_MAX];
-
-	if (getcwd(new_cwd, sizeof(new_cwd)) != NULL)
-	{
-		setenv("OLDPWD", old_cwd, 1);
-		setenv("PWD", new_cwd, 1);
-	}
+	return (0);
 }

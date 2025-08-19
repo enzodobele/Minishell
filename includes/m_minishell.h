@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 11:51:23 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 12:50:31 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,17 @@
 # include <linux/limits.h>
 # include <unistd.h>
 
+typedef struct s_env_node
+{
+	char				*key;
+	char				*value;
+	struct s_env_node	*next;
+}	t_env_node;
+
 typedef struct s_env
 {
-	char			*key;
-	char			*value;
-	char			**path;
-	char			**envp;
-	struct s_env	*next;
+	char				**path;
+	struct s_env_node	*env_list;
 }	t_env;
 
 t_env	*extract_env(char **envp, t_env **env);
@@ -31,6 +35,7 @@ void	clear_env(t_env **env);
 void	add_env_node(t_env **env, t_env *node);
 void	remove_env_node(t_env **env, t_env *node);
 void	create_env_node(t_env **env, char *key, char *value);
+char	*get_env_value(t_env *env, const char *key);
 
 int		handle_export(t_env **env, t_command *command);
 int		handle_unset(t_env **env, t_command *command);
