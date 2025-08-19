@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:30:09 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 12:48:17 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 13:57:49 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,17 +187,17 @@ void	clear_env(t_env **env)
 	*env = NULL;
 }
 
-char	*get_env_value(t_env *env, const char *key)
+t_env_node	*get_env(t_env *env, const char *key)
 {
 	t_env_node	*current;
-
+// printf("get_env called with key: %s\n", key);
 	if (!env || !key)
 		return (NULL);
 	current = env->env_list;
 	while (current)
 	{
 		if (ft_strcmp(current->key, key) == 0)
-			return (current->value);
+			return (current);
 		current = current->next;
 	}
 	return (NULL);

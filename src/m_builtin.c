@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 13:01:27 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/19 13:48:17 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	handle_echo_n(t_command *command)
 	i = 2;
 	while (command->args[i])
 	{
-		write(1, command->args[i], ft_strlen(command->args[i]));
+		write(1, command->args[i], ft_strlen(command->args[i]->string));
 		if (command->args[i + 1])
 			write(1, " ", 1);
 		i++;
@@ -29,11 +29,17 @@ int	handle_echo_n(t_command *command)
 
 int	handle_pwd(void)
 {
-	char	cwd[PATH_MAX];
+	char	*cwd;
 
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		return (printf("%s\n", cwd));
-	return (-1);
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("pwd");
+		return (1);
+	}
+	printf("%s\n", cwd);
+	free(cwd);
+	return (0);
 }
 
 int	handle_exit(t_command *command, t_env **env, t_token **token)
@@ -49,7 +55,7 @@ int	exec_builtins(t_command *command, t_env **env, t_token **token)
 	if (!command || !command->cmd)
 		return (0);
 	if (ft_strcmp(command->cmd->string, "cd") == 0)
-		return (handle_cd(command));
+		return (handle_cd(env, command));
 	if (ft_strcmp(command->cmd->string, "pwd") == 0)
 		return (handle_pwd());
 	if (ft_strcmp(command->cmd->string, "echo") == 0
@@ -64,7 +70,8 @@ int	exec_builtins(t_command *command, t_env **env, t_token **token)
 		return (handle_env(*env));
 	if (ft_strcmp(command->cmd->string, "exit") == 0)
 		return (handle_exit(command, env, token));
-	else
-		return (exec_system(command, env, token));
+	printf("Minishell: command '%s' not found\n", command->cmd->string);
+	// else
+	// 	return (exec_system(command, env, token));
 	return (0);
 }

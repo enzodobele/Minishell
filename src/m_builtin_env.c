@@ -36,11 +36,10 @@ int	handle_export(t_env **env, t_command *command)
 
 	if (!command->args[1])
 		return (print_export(env));
-
 	i = 1;
 	while (command->args[i])
 	{
-		kval = ft_split(command->args[i], '=');
+		kval = ft_split(command->args[i]->string, '=');
 		if (kval && kval[0])
 		{
 			create_env_node(env, kval[0], kval[1]);
@@ -66,7 +65,6 @@ int	handle_unset(t_env **env, t_command *command)
 
 	if (!command->args[1])
 		return (0);
-
 	i = 1;
 	while (command->args[i])
 	{
@@ -74,7 +72,7 @@ int	handle_unset(t_env **env, t_command *command)
 		prev = NULL;
 		while (current)
 		{
-			if (ft_strcmp(current->key, command->args[i]) == 0)
+			if (ft_strcmp(current->key, command->args[i]->string) == 0)
 			{
 				if (prev)
 					prev->next = current->next;

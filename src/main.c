@@ -81,6 +81,7 @@ int main(int argc, char *argv[], char **envp)
 	cmd = NULL;
 	env = NULL;
 	env = extract_env(envp, &env);
+	// debug_print_env(env);
 	// pour éviter l’avertissement de variable non utilisée
     (void)argc;
     (void)argv;
@@ -148,8 +149,7 @@ int main(int argc, char *argv[], char **envp)
 				ft_tokenlstclear(&token);
 			if (cmd)
 				free_command_chain(&cmd);
-		clear_env(&env);
-		return (0);
+		// return (0);
 	}
 	if (input)
 		free(input);
