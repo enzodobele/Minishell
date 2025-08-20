@@ -80,7 +80,7 @@ int main(int argc, char *argv[], char **envp)
 
 	cmd = NULL;
 	env = NULL;
-	env = extract_env(envp, &env);
+	env = extract_env(envp);
 	// debug_print_env(env);
 	// pour éviter l’avertissement de variable non utilisée
     (void)argc;
@@ -93,63 +93,60 @@ int main(int argc, char *argv[], char **envp)
 	{
 		input = readline("minishell$ ");
 		if (!input)
+			break ;
+		if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
 		{
-			// write(1, "exit\n", 5);
-			break;
-		}
-			if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
-			{
-				add_history(input);
-				free(input);
-				continue;
-			}
-			while (has_unclosed_quotes(input) || has_trailing_pipe(input))
-			{
-				next_line = readline("> ");
-				if (g_interrupted)
-				{
-					free(input);
-					input = ft_strdup("", 0, 0);
-					g_interrupted = 0;
-					break;
-				}
-				if (!next_line)
-				{
-					free(input);
-					input = ft_strdup("", 0, 0);
-					continue;
-				}
-				joined = ft_strjoin(input, "\n");
-				free(input);
-				input = ft_strjoin(joined, next_line);
-				free(joined);
-				free(next_line);
-			}
-			if (!input)
-				continue;
-			if (!tokenizer(input, &token, 0))
-			{
-				free(input);
-				continue;
-			}
-			if (!is_token_valid(token))
-			{
-				add_history(input);
-				free(input);
-				ft_tokenlstclear(&token);
-				continue;
-			}
-			// test_parsing(token);
-			cmd = parse_tokens(token);
-			exec(cmd, &env, &token);
 			add_history(input);
-			if (input)
+			free(input);
+			continue;
+		}
+		while (has_unclosed_quotes(input) || has_trailing_pipe(input))
+		{
+			next_line = readline("> ");
+			if (g_interrupted)
+			{
 				free(input);
-			if (token)
-				ft_tokenlstclear(&token);
-			if (cmd)
-				free_command_chain(&cmd);
-		// return (0);
+				input = ft_strdup("", 0, 0);
+				g_interrupted = 0;
+				break;
+			}
+			if (!next_line)
+			{
+				free(input);
+				input = ft_strdup("", 0, 0);
+				continue;
+			}
+			joined = ft_strjoin(input, "\n");
+			free(input);
+			input = ft_strjoin(joined, next_line);
+			free(joined);
+			free(next_line);
+		}
+		if (!input)
+			continue;
+		if (!tokenizer(input, &token, 0))
+		{
+			free(input);
+			continue;
+		}
+		if (!is_token_valid(token))
+		{
+			add_history(input);
+			free(input);
+			ft_tokenlstclear(&token);
+			continue;
+		}
+		// test_parsing(token);
+		cmd = parse_tokens(token);
+		exec(cmd, env, &token);
+		add_history(input);
+		if (input)
+			free(input);
+		if (token)
+			ft_tokenlstclear(&token);
+		if (cmd)
+			free_command_chain(&cmd);
+	// return (0);
 	}
 	if (input)
 		free(input);

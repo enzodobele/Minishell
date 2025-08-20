@@ -3,15 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   m_pipeline.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:46:00 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 19:02:17 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/20 18:12:11 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "m_minishell.h"
+
+int	exec(t_command *cmd, t_env *env, t_token **token)
+{
+	int	in_fd;
+
+	(void)token;
+	in_fd = -1;
+	if (!cmd || !env)
+		return (-1);
+	while (cmd)
+	{
+		in_fd = fork_and_exec(env, cmd, in_fd, NULL);
+		if (in_fd < 0)
+			return (-1);
+		cmd = cmd->next;
+	}
+	return (wait_for_children(env->last_pid));
+}
 
 static int	setup_input_output(char *outfile, char *infile, int *in_fd,
 			int *outfile_error)
@@ -44,7 +62,7 @@ static int	setup_input_output(char *outfile, char *infile, int *in_fd,
 	return (0);
 }
 
-static int	execute_pipeline(t_env **env, t_command *cmd, int in_fd, char *outfile)
+static int	execute_pipeline(t_env *env, t_command *cmd, int in_fd, char *outfile)
 {
 	while (cmd)
 	{
@@ -53,21 +71,21 @@ static int	execute_pipeline(t_env **env, t_command *cmd, int in_fd, char *outfil
 			return (-1);
 		cmd = cmd->next;
 	}
-	return (wait_for_children((*env)->last_pid));
+	return (wait_for_children(env->last_pid));
 }
 
-int	pipexecution(t_env **env, t_command **cmd, char *infile, char *outfile)
+int	pipexecution(t_env *env, t_command *cmd, char *infile, char *outfile)
 {
 	int	in_fd;
 	int	outfile_error;
 
 	setup_input_output(outfile, infile, &in_fd, &outfile_error);
-	(*env)->last_exit_status = execute_pipeline(env, *cmd, in_fd, outfile);
-	if ((*env)->last_exit_status < 0)
+	env->last_exit_status = execute_pipeline(env, cmd, in_fd, outfile);
+	if (env->last_exit_status < 0)
 		return (-1);
 	if (outfile_error)
 		return (1);
-	return ((*env)->last_exit_status);
+	return (env->last_exit_status);
 }
 
 int	wait_for_children(pid_t last_pid)

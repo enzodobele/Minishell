@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 15:10:40 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 18:01:24 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,11 @@ int	handle_pwd(void)
 	return (0);
 }
 
-int	handle_exit(t_command *command, t_env **env)
+int	handle_exit(t_command *command, t_env *env)
 {
 	(void)command;
 	(void)env;
+	printf("exit\n");
 	cleanup_and_exit(NULL, NULL, NULL, env);
 	return (42);
 }
-
-
