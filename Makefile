@@ -41,6 +41,7 @@ SRC = \
 	handler_token_2.c \
 	m_builtin_cd.c \
 	m_builtin_env.c \
+	m_builtin_export.c \
 	m_builtin.c \
 	m_clean.c \
 	m_command_validation.c \
