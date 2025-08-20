@@ -53,7 +53,7 @@ int	has_trailing_pipe(char *input)
 
 void	init_minishell(t_env **env, char **envp)
 {
-	*env = extract_env(envp, env);
+	*env = extract_env(envp);
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -82,13 +82,13 @@ char	*handle_multiline_input(char *input)
 			free(input);
 			input = ft_strdup("", 0, 0);
 			g_interrupted = 0;
-			break;
+			break ;
 		}
 		if (!next_line)
 		{
 			free(input);
 			input = ft_strdup("", 0, 0);
-			break;
+			break ;
 		}
 		input = join_and_free(input, next_line);
 		free(next_line);
@@ -125,7 +125,7 @@ void	execute_command(t_token **token, t_env **env)
 
 	test_parsing(*token);
 	cmd = parse_tokens(*token);
-	exec(cmd, env, token);
+	exec(cmd, *env, token);
 	if (cmd)
 		free_command_chain(&cmd);
 }
@@ -136,17 +136,17 @@ void	minishell_loop(t_env **env, char *input, t_token *token)
 	{
 		input = readline("minishell$ ");
 		if (!input)
-			break;
+			break ;
 		if (!validate_input_syntax(input))
 		{
 			free(input);
-			continue;
+			continue ;
 		}
 		input = handle_multiline_input(input);
 		if (input[0] == '\0')
 		{
 			free(input);
-			continue;
+			continue ;
 		}
 		if (process_tokens(input, &token))
 		{
