@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 13:50:56 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 14:30:27 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int			print_export(t_env **env);
 
 int			exec(t_command *commands, t_env **env, t_token **token);
 int			exec_builtins(t_command *commands, t_env **env);
-int			exec_system(t_command *command, t_env **env, char *outfile);
 int			pipexecution(t_env **env, t_command **cmd, char *infile,
 				char *outfile);
 

@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 14:08:37 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 14:30:27 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,7 @@ int	exec_child(t_env **env, t_command *command, int in_fd, int pipe_fd[2], char 
 	handle_command_error(command, check_result);
 	setup_input_redirect(in_fd);
 	if (setup_output_redirect(command, pipe_fd, outfile))
-	{
 		exit(1);
-	}
-	// Exécuter directement avec execve (pas de builtins dans le child)
 	execve(command->cmd->string, argv, (*env)->envp);
 	perror("execve");
 	exit(127);
@@ -91,80 +88,40 @@ int	fork_and_exec(t_env **env, t_command *command, int in_fd, char *outfile)
 	return (0);
 }
 
-int	exec_system(t_command *command, t_env **env, char *outfile)
-{
-	if (!command || !command->cmd || !command->cmd->string)
-		return (0);
-	while (command)
-	{
-		if (check_command(*env, command) < 0)
-			perror("command not found");
-		else
-			fork_and_exec(env, command, -1, outfile);
-		command = command->next;
-	}
-	return (0);
-}
-
 int	exec_builtins(t_command *command, t_env **env)
 {
 	if (!command || !command->cmd)
 		return (0);
 	if (ft_strcmp(command->cmd->string, "cd") == 0)
-		return (handle_cd(env, command));
+		return (handle_cd(env, command), 1);
 	if (ft_strcmp(command->cmd->string, "pwd") == 0)
-		return (handle_pwd());
+		return (handle_pwd(), 1);
 	if (ft_strcmp(command->cmd->string, "echo") == 0
 		&& command->args && command->args[0]
 		&& ft_strcmp(command->args[0]->string, "-n") == 0)
-		return (handle_echo_n(command));
+		return (handle_echo_n(command), 1);
 	if (ft_strcmp(command->cmd->string, "export") == 0)
-		return (handle_export(env, command));
+		return (handle_export(env, command), 1);
 	if (ft_strcmp(command->cmd->string, "unset") == 0)
-		return (handle_unset(env, command));
+		return (handle_unset(env, command), 1);
 	if (ft_strcmp(command->cmd->string, "env") == 0)
-		return (handle_env(*env));
+		return (handle_env(*env), 1);
 	if (ft_strcmp(command->cmd->string, "exit") == 0)
-		return (handle_exit(command, env));
+		return (handle_exit(command, env), 1);
 	return (0);
 }
 
 int	exec(t_command *commands, t_env **env, t_token **token)
 {
-	(void)token;  // Pour éviter warning unused parameter
-	
+	(void)token;
+
 	if (!commands || !env || !(*env))
 		return (-1);
-	
-	// Si il y a des pipes, utiliser pipexecution
 	if (commands->pipe_out)
 		return (pipexecution(env, &commands, NULL, NULL));
-	
-	// Pour une commande simple, tester d'abord les builtins
 	if (exec_builtins(commands, env))
-		return (0);  // Builtin trouvé et exécuté
-	
-	// Si aucun builtin ne match, utiliser exec_system
-	return (exec_system(commands, env, NULL));
+		return (0);
+	if (check_command(*env, commands) < 0)
+		return (perror("command not found"), -1);
+	return (fork_and_exec(env, commands, -1, NULL));
 }
-
-// int	exec(t_command *commands, t_env **env, t_token **token)
-// {
-// 	t_command	*current;
-
-// 	if (!commands)
-// 		return (0);
-// 	current = commands;
-// 	while (current)
-// 	{
-// 		if (!current->cmd)
-// 		{
-// 			printf("Error: command is NULL (should not happen)\n");
-// 			current = current->next;
-// 			continue ;
-// 		}
-// 		exec_builtins(current, env, token);
-// 		current = current->next;
-// 	}
-// 	return (0);
-// }
