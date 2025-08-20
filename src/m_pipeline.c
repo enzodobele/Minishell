@@ -6,101 +6,138 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/08/20 22:03:52 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/21 01:49:50 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 #include "m_minishell.h"
 
-int	exec(t_command *cmd, t_env *env, t_token **token)
+
+
+int fork_and_exec(t_env *env, t_command *command, int in_fd, int out_fd)
 {
-	int	in_fd;
+	int	pid;
+	int	pipe_fd[2];
+	int	is_piped;
 
-	(void)token;
-	in_fd = -1;
-	if (!cmd || !env)
-		return (-1);
-	while (cmd)
-	{
-		in_fd = fork_and_exec(env, cmd, in_fd, NULL);
-		if (in_fd < 0)
-			return (-1);
-		cmd = cmd->next;
-	}
-	return (wait_for_children(env->last_pid));
-}
 
-static int	setup_input_output(char *outfile, char *infile, int *in_fd,
-			int *outfile_error)
-{
-	int	outfile_test;
-
-	*outfile_error = 0;
-	if (outfile && outfile[0] != '\0')
-	{
-		outfile_test = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (outfile_test < 0)
-		{
-			perror(outfile);
-			*outfile_error = 1;
-		}
-		else
-			close(outfile_test);
-	}
-}
-
-static int	setup_input_output(char *outfile, char *infile, int *in_fd,
-			int *outfile_error)
-{
-	_setup_output(outfile, outfile_error);
-	if (infile && infile[0] != '\0')
-	{
-		*in_fd = open(infile, O_RDONLY);
-		if (*in_fd < 0)
-		{
-			perror(infile);
-			*in_fd = -1;
-		}
-	}
+	is_piped = (command->next != NULL);
+	if (ft_strcmp(command->cmd->string, "exit") == 0 && !is_piped)
+		return (exec_builtins(command, env));
+	if (is_piped && pipe(pipe_fd) < 0)
+		return (handle_system_error("Pipe creation failed"), -1);
+	pid = fork();
+	if (pid < 0)
+		return (handle_system_error("Fork failed"), -1);
+	if (pid == 0)
+		exec_child(env, command, in_fd, out_fd, pipe_fd, is_piped);
 	else
-		*in_fd = 0;
+	{
+		env->last_pid = pid;
+		if (in_fd > 0)
+			close(in_fd);
+		if (out_fd > 1)
+			close(out_fd);
+		if (is_piped)
+		{
+			close(pipe_fd[1]);
+			return (pipe_fd[0]);
+		}
+	}
 	return (0);
 }
 
-static int	execute_pipeline(t_env *env, t_command *cmd, int in_fd, char *outfile)
+static int	_get_last_output_fd(t_command *cmd, int *outfile_error)
+{
+	t_redirect	*redir;
+	int			fd;
+
+	fd = 1;
+	*outfile_error = 0;
+	redir = cmd->redirects;
+	while (redir)
+	{
+		if (redir->type == REDIR_OUT)
+		{
+			if (fd > 1)
+				close(fd);
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		}
+		else if (redir->type == REDIR_APPEND)
+		{
+			if (fd > 1)
+				close(fd);
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		}
+		if ((redir->type == REDIR_OUT || redir->type == REDIR_APPEND) && fd < 0)
+		{
+			perror(redir->filename);
+			*outfile_error = 1;
+		}
+		redir = redir->next;
+	}
+	return (fd);
+}
+
+static int	_get_last_input_fd(t_command *cmd)
+{
+	t_redirect	*redir;
+	int			fd;
+
+	fd = 0;
+	redir = cmd->redirects;
+	while (redir)
+	{
+		if (redir->type == REDIR_IN)
+		{
+			if (fd > 0)
+				close(fd);
+			fd = open(redir->filename, O_RDONLY);
+			if (fd < 0)
+				perror(redir->filename);
+		}
+		redir = redir->next;
+	}
+	return (fd);
+}
+
+int	pipexecution(t_env *env, t_command *cmd)
 {
 	int	in_fd;
+	int	out_fd;
 	int	outfile_error;
+	int	redir_in_fd;
 
-	setup_input_output(outfile, infile, &in_fd, &outfile_error);
+	in_fd = 0;
 	while (cmd)
 	{
-		in_fd = fork_and_exec(env, cmd, in_fd, outfile);
+		redir_in_fd = _get_last_input_fd(cmd);
+		out_fd = _get_last_output_fd(cmd, &outfile_error);
+		if (outfile_error)
+		{
+			if (redir_in_fd > 0)
+				close(redir_in_fd);
+			if (in_fd > 0)
+				close(in_fd);
+			return (1);
+		}
+		if (redir_in_fd > 0)
+		{
+			if (in_fd > 0)
+				close(in_fd);
+			in_fd = redir_in_fd;
+		}
+		in_fd = fork_and_exec(env, cmd, in_fd, out_fd);
 		if (in_fd < 0)
 			return (-1);
+
 		cmd = cmd->next;
 	}
-	return (wait_for_children(env->last_pid));
+	return (wait_for_children());
 }
 
-int	pipexecution(t_env *env, t_command *cmd, char *infile, char *outfile)
-{
-	int	in_fd;
-	int	outfile_error;
-
-	setup_input_output(outfile, infile, &in_fd, &outfile_error);
-	env->last_exit_status = execute_pipeline(env, cmd, in_fd, outfile);
-	if (env->last_exit_status < 0)
-		return (-1);
-	if (outfile_error)
-		return (1);
-	return (env->last_exit_status);
-	return (env->last_exit_status);
-}
-
-int	wait_for_children(pid_t last_pid)
+int	wait_for_children(void)
 {
 	int		status;
 	int		last_exit_status;
@@ -108,21 +145,19 @@ int	wait_for_children(pid_t last_pid)
 	pid_t	waited_pid;
 
 	last_exit_status = 0;
-	waited_pid = wait(&status);
+	waited_pid = 1;
 	while (waited_pid > 0)
 	{
-		if (waited_pid == last_pid)
+		if (WIFEXITED(status))
+			last_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
 		{
-			if (WIFEXITED(status))
-				last_exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-			{
-				sig = WTERMSIG(status);
-				if (sig != SIGPIPE)
-					last_exit_status = 128 + sig;
-			}
+			sig = WTERMSIG(status);
+			if (sig != SIGPIPE)
+				last_exit_status = 128 + sig;
 		}
 		waited_pid = wait(&status);
 	}
 	return (last_exit_status);
 }
+

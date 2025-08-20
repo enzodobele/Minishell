@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 22:04:17 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/21 01:48:49 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <stddef.h>
+# include <errno.h>
 
 typedef struct s_env_node
 {
@@ -54,10 +55,10 @@ int			handle_echo_n(t_command *command);
 int			handle_export(t_env *env, t_command *command);
 int			print_export(t_env *env);
 
-int			exec(t_command *commands, t_env *env, t_token **token);
 int			exec_builtins(t_command *commands, t_env *env);
-int			pipexecution(t_env *env, t_command *cmd, char *infile,
-				char *outfile);
+int			pipexecution(t_env *env, t_command *cmd);
+int			exec_child(t_env *env, t_command *command, int in_fd, int out_fd, int pipe_fd[2], int is_piped);
+
 
 // Command validation
 int			check_command(t_env *env, t_command *cmd);
@@ -69,9 +70,8 @@ int			setup_output_redirect(t_command *command, int pipe_fd[2],
 void		handle_command_error(t_command *command, int check_result);
 void		handle_system_error(const char *error_msg);
 
-int			fork_and_exec(t_env *env, t_command *command, int in_fd,
-				char *outfile);
-int			wait_for_children(pid_t last_pid);
+int			fork_and_exec(t_env *env, t_command *command, int in_fd, int out_fd);
+int			wait_for_children(void);
 
 void		debug_print_token(t_token *token);
 void		debug_print_all_tokens(t_token *token);
