@@ -20,20 +20,27 @@ static int	setup_input_output(char *outfile, char *infile, int *in_fd,
 
 	*outfile_error = 0;
 	if (outfile && outfile[0] != '\0')
-		outfile_test = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (outfile_test < 0)
 	{
-		perror(outfile);
-		*outfile_error = 1;
+		outfile_test = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (outfile_test < 0)
+		{
+			perror(outfile);
+			*outfile_error = 1;
+		}
+		else
+			close(outfile_test);
+	}
+	if (infile && infile[0] != '\0')
+	{
+		*in_fd = open(infile, O_RDONLY);
+		if (*in_fd < 0)
+		{
+			perror(infile);
+			*in_fd = -1;
+		}
 	}
 	else
-		close(outfile_test);
-	*in_fd = open(infile, O_RDONLY);
-	if (*in_fd < 0)
-	{
-		perror(infile);
-		*in_fd = -1;
-	}
+		*in_fd = 0;
 	return (0);
 }
 

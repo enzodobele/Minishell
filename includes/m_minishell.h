@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 14:30:27 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 21:14:35 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,15 @@ void		execute_command(t_token **token, t_env **env);
 void		init_minishell(t_env **env, char **envp);
 void		minishell_loop(t_env **env, char *input, t_token *token);
 
+// enzo
+
+void		execute_command(t_token **token, t_env **env);
+void		init_minishell(t_env **env, char **envp);
+void		minishell_loop(t_env **env, char *input, t_token *token);
+void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env **env);
+void		cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env **env);
+// Cleanup functions
+void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env **env);
+void		cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env **env);
 
 #endif /* M_MINISHELL_H */

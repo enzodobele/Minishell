@@ -42,6 +42,7 @@ SRC = \
 	m_builtin_cd.c \
 	m_builtin_env.c \
 	m_builtin.c \
+	m_clean.c \
 	m_command_validation.c \
 	m_debug.c \
 	m_env_utils.c \
