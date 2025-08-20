@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_minishell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 19:01:45 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/20 13:44:11 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <sys/wait.h>
 # include <linux/limits.h>
 # include <unistd.h>
+# include <string.h>
+# include <stddef.h>
 
 typedef struct s_env_node
 {
