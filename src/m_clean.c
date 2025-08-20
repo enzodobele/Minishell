@@ -6,15 +6,14 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:50:14 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/20 18:07:25 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 21:51:41 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "m_minishell.h"
 
-void	cleanup_minishell(char **input, t_token **token, t_command **cmd,
-			t_env *env)
+void	cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env **env)
 {
 	if (input && *input)
 	{
@@ -31,16 +30,16 @@ void	cleanup_minishell(char **input, t_token **token, t_command **cmd,
 		free_command_chain(cmd);
 		*cmd = NULL;
 	}
-	if (env)
+	if (env && *env)
 	{
-		clear_env(&env);
-		env = NULL;
+		clear_env(env);
+		*env = NULL;
 	}
 }
 
-void	cleanup_and_exit(char **input, t_token **token, t_command **cmd,
-			t_env *env)
+void	cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env **env)
 {
 	cleanup_minishell(input, token, cmd, env);
 	exit(0);
 }
+
