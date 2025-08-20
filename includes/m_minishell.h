@@ -89,5 +89,11 @@ char		*ft_strchr(const char *s, int c);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 void		ft_putstr_fd(char *s, int fd);
 
+// enzo
+
+void		execute_command(t_token **token, t_env **env);
+void		init_minishell(t_env **env, char **envp);
+void		minishell_loop(t_env **env, char *input, t_token *token);
+
 
 #endif /* M_MINISHELL_H */
