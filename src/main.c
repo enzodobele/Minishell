@@ -139,7 +139,7 @@ int main(int argc, char *argv[], char **envp)
 				ft_tokenlstclear(&token);
 				continue;
 			}
-			test_parsing(token);
+			// test_parsing(token);
 			cmd = parse_tokens(token);
 			exec(cmd, &env, &token);
 			add_history(input);

@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:43 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 14:30:27 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 14:55:08 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,8 @@ char		*ft_strchr(const char *s, int c);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 void		ft_putstr_fd(char *s, int fd);
 
+// Cleanup functions
+void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env **env);
+void		cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env **env);
 
 #endif /* M_MINISHELL_H */

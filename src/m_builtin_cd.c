@@ -40,7 +40,6 @@ int	handle_cd(t_env **env, t_command *command)
 		else
 			result = chdir(path);
 	}
-	printf("%d\n", result);
 	if (result == 0)
 		update_oldpwd(env, pwd);
 	return (result);
@@ -69,7 +68,7 @@ static int	cd_to_oldpwd(t_env **env)
 		printf("Minishell: cd: OLDPWD not set\n");
 		return (-1);
 	}
-	printf("%s=%s\n", oldpwd_node->key, oldpwd_node->value);
+	printf("%s\n", oldpwd_node->value);
 	return (chdir(oldpwd_node->value));
 }
 
