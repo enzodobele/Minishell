@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 21:45:53 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 22:02:32 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,3 +128,14 @@ int	fork_and_exec(t_env *env, t_command *command, int in_fd, char *outfile)
 	waitpid(pid, NULL, 0);
 	return (0);
 }
+
+// int	exec(t_command *commands, t_env **env, t_token **token)
+// {
+// 	(void)token;
+
+// 	if (!commands || !env || !(*env))
+// 		return (-1);
+// 	if (commands->pipe_out)
+// 		return (pipexecution(env, &commands, NULL, NULL));
+// 	return (fork_and_exec(env, commands, -1, NULL));
+// }
