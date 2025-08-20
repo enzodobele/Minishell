@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/19 19:03:51 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/20 14:08:37 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ int	exec_child(t_env **env, t_command *command, int in_fd, int pipe_fd[2], char 
 	{
 		exit(1);
 	}
-	if (!exec_builtins(command, env))
-		execve(command->cmd->string, argv, (*env)->envp);
+	// Exécuter directement avec execve (pas de builtins dans le child)
+	execve(command->cmd->string, argv, (*env)->envp);
 	perror("execve");
 	exit(127);
 }
@@ -99,10 +99,11 @@ int	exec_system(t_command *command, t_env **env, char *outfile)
 	{
 		if (check_command(*env, command) < 0)
 			perror("command not found");
-		fork_and_exec(env, command, -1, outfile);
+		else
+			fork_and_exec(env, command, -1, outfile);
 		command = command->next;
 	}
-	return (-1);
+	return (0);
 }
 
 int	exec_builtins(t_command *command, t_env **env)
@@ -126,6 +127,25 @@ int	exec_builtins(t_command *command, t_env **env)
 	if (ft_strcmp(command->cmd->string, "exit") == 0)
 		return (handle_exit(command, env));
 	return (0);
+}
+
+int	exec(t_command *commands, t_env **env, t_token **token)
+{
+	(void)token;  // Pour éviter warning unused parameter
+	
+	if (!commands || !env || !(*env))
+		return (-1);
+	
+	// Si il y a des pipes, utiliser pipexecution
+	if (commands->pipe_out)
+		return (pipexecution(env, &commands, NULL, NULL));
+	
+	// Pour une commande simple, tester d'abord les builtins
+	if (exec_builtins(commands, env))
+		return (0);  // Builtin trouvé et exécuté
+	
+	// Si aucun builtin ne match, utiliser exec_system
+	return (exec_system(commands, env, NULL));
 }
 
 // int	exec(t_command *commands, t_env **env, t_token **token)
