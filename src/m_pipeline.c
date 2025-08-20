@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:46:00 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 18:12:11 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/20 19:15:14 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ int	exec(t_command *cmd, t_env *env, t_token **token)
 	return (wait_for_children(env->last_pid));
 }
 
-static int	setup_input_output(char *outfile, char *infile, int *in_fd,
-			int *outfile_error)
+static int	_setup_output(char *outfile, int *outfile_error)
 {
 	int	outfile_test;
 
@@ -48,6 +47,12 @@ static int	setup_input_output(char *outfile, char *infile, int *in_fd,
 		else
 			close(outfile_test);
 	}
+}
+
+static int	setup_input_output(char *outfile, char *infile, int *in_fd,
+			int *outfile_error)
+{
+	_setup_output(outfile, outfile_error);
 	if (infile && infile[0] != '\0')
 	{
 		*in_fd = open(infile, O_RDONLY);
@@ -62,8 +67,12 @@ static int	setup_input_output(char *outfile, char *infile, int *in_fd,
 	return (0);
 }
 
-static int	execute_pipeline(t_env *env, t_command *cmd, int in_fd, char *outfile)
+int	pipexecution(t_env *env, t_command *cmd, char *infile, char *outfile)
 {
+	int	in_fd;
+	int	outfile_error;
+
+	setup_input_output(outfile, infile, &in_fd, &outfile_error);
 	while (cmd)
 	{
 		in_fd = fork_and_exec(env, cmd, in_fd, outfile);
@@ -71,16 +80,7 @@ static int	execute_pipeline(t_env *env, t_command *cmd, int in_fd, char *outfile
 			return (-1);
 		cmd = cmd->next;
 	}
-	return (wait_for_children(env->last_pid));
-}
-
-int	pipexecution(t_env *env, t_command *cmd, char *infile, char *outfile)
-{
-	int	in_fd;
-	int	outfile_error;
-
-	setup_input_output(outfile, infile, &in_fd, &outfile_error);
-	env->last_exit_status = execute_pipeline(env, cmd, in_fd, outfile);
+	env->last_exit_status = wait_for_children(env->last_pid);
 	if (env->last_exit_status < 0)
 		return (-1);
 	if (outfile_error)
