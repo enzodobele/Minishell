@@ -1,18 +1,18 @@
-#include "minishell.h"
-#include "m_minishell.h"
+#include "../includes/m_minishell.h"
+#include "../includes/minishell.h"
 
 volatile sig_atomic_t g_interrupted = 0;
 
 void	handle_sigint(int signum)
 {
 	(void)signum;
-
 	g_interrupted = 1;
 	write(1, "\n", 1);
-    rl_replace_line("", 0); // del la lign de l'historique
-	rl_on_new_line(); // dit a l'histo qu'on est sur une newline
-	rl_redisplay(); // reaffiche minishell$
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
 }
+
 int	has_unclosed_quotes(char *str)
 {
 	int		i;
@@ -33,6 +33,7 @@ int	has_unclosed_quotes(char *str)
 	}
 	return (quote != 0);
 }
+
 int	has_trailing_pipe(char *input)
 {
 	int	i;
@@ -49,6 +50,115 @@ int	has_trailing_pipe(char *input)
 		return (1);
 	return (0);
 }
+
+void	init_minishell(t_env **env, char **envp)
+{
+	*env = extract_env(envp, env);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+char	*join_and_free(char *input, char *next_line)
+{
+	char	*joined;
+	char	*temp;
+
+	joined = ft_strjoin(input, "\n");
+	free(input);
+	temp = ft_strjoin(joined, next_line);
+	free(joined);
+	return (temp);
+}
+
+char	*handle_multiline_input(char *input)
+{
+	char	*next_line;
+
+	while (has_unclosed_quotes(input) || has_trailing_pipe(input))
+	{
+		next_line = readline("> ");
+		if (g_interrupted)
+		{
+			free(input);
+			input = ft_strdup("", 0, 0);
+			g_interrupted = 0;
+			break;
+		}
+		if (!next_line)
+		{
+			free(input);
+			input = ft_strdup("", 0, 0);
+			break;
+		}
+		input = join_and_free(input, next_line);
+		free(next_line);
+	}
+	return (input);
+}
+
+int	validate_input_syntax(char *input)
+{
+	if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
+	{
+		add_history(input);
+		return (0);
+	}
+	return (1);
+}
+
+int	process_tokens(char *input, t_token **token)
+{
+	if (!tokenizer(input, token, 0))
+		return (0);
+	if (!is_token_valid(*token))
+	{
+		add_history(input);
+		ft_tokenlstclear(token);
+		return (0);
+	}
+	return (1);
+}
+
+void	execute_command(t_token **token, t_env **env)
+{
+	t_command	*cmd;
+
+	test_parsing(*token);
+	cmd = parse_tokens(*token);
+	exec(cmd, env, token);
+	if (cmd)
+		free_command_chain(&cmd);
+}
+
+void	minishell_loop(t_env **env, char *input, t_token *token)
+{
+	while (1)
+	{
+		input = readline("minishell$ ");
+		if (!input)
+			break;
+		if (!validate_input_syntax(input))
+		{
+			free(input);
+			continue;
+		}
+		input = handle_multiline_input(input);
+		if (input[0] == '\0')
+		{
+			free(input);
+			continue;
+		}
+		if (process_tokens(input, &token))
+		{
+			execute_command(&token, env);
+			add_history(input);
+		}
+		free(input);
+		if (token)
+			ft_tokenlstclear(&token);
+	}
+}
+
 int	has_leading_pipe(char *input)
 {
 	int	i;
@@ -69,91 +179,20 @@ int	has_leading_pipe(char *input)
 	}
 	return (0);
 }
-int main(int argc, char *argv[], char **envp)
+
+int	main(int argc, char *argv[], char **envp)
 {
-    char    	*input;
-	t_token 	*token;
-	char 		*next_line;
-	char		*joined;
-	t_command	*cmd;
-	t_env		*env;
+	t_env	*env;
+	char	*input;
+	t_token	*token;
 
-	cmd = NULL;
+	(void)argc;
+	(void)argv;
 	env = NULL;
-	env = extract_env(envp);
-	// debug_print_env(env);
-	// pour éviter l’avertissement de variable non utilisée
-    (void)argc;
-    (void)argv;
-
 	token = NULL;
-    signal(SIGINT, handle_sigint); // gère ctrl-c
-    signal(SIGQUIT, SIG_IGN); // gère ctrl-/
-    while (1)
-	{
-		input = readline("minishell$ ");
-		if (!input)
-			break ;
-		if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
-		{
-			add_history(input);
-			free(input);
-			continue;
-		}
-		while (has_unclosed_quotes(input) || has_trailing_pipe(input))
-		{
-			next_line = readline("> ");
-			if (g_interrupted)
-			{
-				free(input);
-				input = ft_strdup("", 0, 0);
-				g_interrupted = 0;
-				break;
-			}
-			if (!next_line)
-			{
-				free(input);
-				input = ft_strdup("", 0, 0);
-				continue;
-			}
-			joined = ft_strjoin(input, "\n");
-			free(input);
-			input = ft_strjoin(joined, next_line);
-			free(joined);
-			free(next_line);
-		}
-		if (!input)
-			continue;
-		if (!tokenizer(input, &token, 0))
-		{
-			free(input);
-			continue;
-		}
-		if (!is_token_valid(token))
-		{
-			add_history(input);
-			free(input);
-			ft_tokenlstclear(&token);
-			continue;
-		}
-		// test_parsing(token);
-		cmd = parse_tokens(token);
-		exec(cmd, env, &token);
-		add_history(input);
-		if (input)
-			free(input);
-		if (token)
-			ft_tokenlstclear(&token);
-		if (cmd)
-			free_command_chain(&cmd);
-	// return (0);
-	}
-	if (input)
-		free(input);
-	if (token)
-		ft_tokenlstclear(&token);
-	if (cmd)
-		free_command_chain(&cmd);
+	input = NULL;
+	init_minishell(&env, envp);
+	minishell_loop(&env, input, token);
 	clear_env(&env);
 	return (0);
 }

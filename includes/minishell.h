@@ -137,6 +137,17 @@ int			handle_pipe_token(t_parsing_state *state, t_command **current_cmd,
 				t_command **commands, t_token *token);
 int			process_single_token(t_token *token, t_parsing_state *state,
 				t_command **current_cmd, t_command **commands);
+int			validate_input_syntax(char *input);
+int			process_tokens(char *input, t_token **token);
+char		*handle_multiline_input(char *input);
+char		*handle_multiline_input(char *input);
+
+// main
+int			has_unclosed_quotes(char *str);
+int			has_trailing_pipe(char *input);
+int			process_tokens(char *input, t_token **token);
+int			validate_input_syntax(char *input);
+char		*join_and_free(char *input, char *next_line);
 
 // lib
 char		*ft_strdup(const char *s, int len_s, int i);
