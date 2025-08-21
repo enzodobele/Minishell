@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/21 13:24:42 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/21 14:28:00 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static int	_get_last_output_fd(t_command *cmd, t_pipe_data *pipe_data)
 	t_redirect	*redir;
 	int			fd;
 
+	fd = -1;
 	pipe_data->outfile_error = 0;
 	redir = cmd->redirects;
 	while (redir)
@@ -57,7 +58,7 @@ static int	_get_last_input_fd(t_command *cmd)
 	t_redirect	*redir;
 	int			fd;
 
-	fd = 0;
+	fd = -1;
 	redir = cmd->redirects;
 	while (redir)
 	{
@@ -67,7 +68,10 @@ static int	_get_last_input_fd(t_command *cmd)
 				close(fd);
 			fd = open(redir->filename, O_RDONLY);
 			if (fd < 0)
+			{
 				perror(redir->filename);
+				return (-1);
+			}
 		}
 		redir = redir->next;
 	}
@@ -76,12 +80,15 @@ static int	_get_last_input_fd(t_command *cmd)
 
 static void	_pipexecution_clean_fds(t_pipe_data *pipe_data)
 {
+
 	if (pipe_data->outfile_error)
 	{
 		if (pipe_data->redir_in_fd > 0)
 			close(pipe_data->redir_in_fd);
 		if (pipe_data->in_fd > 0)
 			close(pipe_data->in_fd);
+		pipe_data->in_fd = -1;
+		return ;
 	}
 	if (pipe_data->redir_in_fd > 0)
 	{
@@ -89,6 +96,8 @@ static void	_pipexecution_clean_fds(t_pipe_data *pipe_data)
 			close(pipe_data->in_fd);
 		pipe_data->in_fd = pipe_data->redir_in_fd;
 	}
+	else
+		pipe_data->in_fd = STDIN_FILENO;
 }
 
 int	pipexecution(t_env *env, t_command *cmd)
@@ -99,16 +108,26 @@ int	pipexecution(t_env *env, t_command *cmd)
 	if (!pipe_data)
 		return (-1);
 	*pipe_data = (t_pipe_data){0};
-	pipe_data->in_fd = 0;
 	while (cmd)
 	{
-		pipe_data->redir_in_fd = _get_last_input_fd(cmd);
-		pipe_data->out_fd = _get_last_output_fd(cmd, pipe_data);
+		if (cmd->redirects && cmd->redirects->type == REDIR_IN)
+			pipe_data->redir_in_fd = _get_last_input_fd(cmd);
+		if (cmd->redirects && (cmd->redirects->type == REDIR_OUT
+				|| cmd->redirects->type == REDIR_APPEND))
+			pipe_data->out_fd = _get_last_output_fd(cmd, pipe_data);
 		_pipexecution_clean_fds(pipe_data);
+		if (pipe_data->in_fd < 0 || pipe_data->outfile_error)
+		{
+			free(pipe_data);
+			return (wait_for_children(), -1);
+		}
 		pipe_data->in_fd = fork_and_exec(env, cmd, pipe_data);
-		if (pipe_data->in_fd < 0)
-			return (-1);
 		cmd = cmd->next;
 	}
+	free(pipe_data);
 	return (wait_for_children());
 }
+
+// printf("pipe data in_fd=%d, out_fd=%d, pipe_fd[0]=%d, pipe_fd[1]=%d,
+// 	error=%d\n", pipe_data->in_fd, pipe_data->out_fd,
+// 	pipe_data->pipe_fd[0], pipe_data->pipe_fd[1], pipe_data->outfile_error);

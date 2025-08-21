@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/21 12:48:34 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/21 13:36:20 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	exec_command(t_command *command, t_env *env)
 	return (0);
 }
 
-static void	_clean_fds(t_pipe_data *pipe_data)
+static void	_clean_child_fds(t_pipe_data *pipe_data)
 {
 	if (pipe_data->in_fd > 0)
 	{
@@ -112,7 +112,7 @@ int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 
 	if (!command || !command->cmd || !command->cmd->string)
 		exit(127);
-	_clean_fds(pipe_data);
+	_clean_child_fds(pipe_data);
 	check_result = check_command(env, command);
 	if (check_result < 0)
 	{
