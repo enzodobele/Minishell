@@ -50,6 +50,7 @@ SRC = \
 	m_env.c \
 	m_error_handler.c \
 	m_exec.c \
+	m_fork.c \
 	m_pipeline.c \
 	m_redirect.c \
 	process_pre_parsing.c \

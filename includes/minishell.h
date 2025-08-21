@@ -33,6 +33,8 @@ typedef struct s_pipe_data
 	int		out_fd;
 	int		pipe_fd[2];
 	int		is_piped;
+	int		outfile_error;
+	int		redir_in_fd;
 }	t_pipe_data;
 
 typedef struct s_env_node
@@ -216,7 +218,7 @@ int			print_export(t_env *env);
 
 int			exec_builtins(t_command *commands, t_env *env);
 int			pipexecution(t_env *env, t_command *cmd);
-int			exec_child(t_env *env, t_command *command, int in_fd, int out_fd, int pipe_fd[2], int is_piped);
+int			exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data);
 
 
 // Command validation
@@ -229,7 +231,8 @@ int			setup_output_redirect(t_command *command, int pipe_fd[2],
 void		handle_command_error(t_command *command, int check_result);
 void		handle_system_error(const char *error_msg);
 
-int			fork_and_exec(t_env *env, t_command *command, int in_fd, int out_fd);
+int			fork_and_exec(t_env *env, t_command *command,
+				t_pipe_data *pipe_data);
 int			wait_for_children(void);
 
 void		debug_print_token(t_token *token);
