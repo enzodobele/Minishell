@@ -27,6 +27,14 @@
 # include <errno.h>
 # include <stddef.h>
 
+typedef struct s_pipe_data
+{
+	int		in_fd;
+	int		out_fd;
+	int		pipe_fd[2];
+	int		is_piped;
+}	t_pipe_data;
+
 typedef struct s_env_node
 {
 	char				*key;
@@ -46,12 +54,12 @@ typedef struct s_env
 typedef enum e_token_type
 {
 	WORD,
-	PIPE, // |
-	LOGICAL_OR, // ||
-	REDIR_IN, // <
-	REDIR_OUT, // >
-	REDIR_APPEND, // >>
-	HEREDOC, // <<
+	PIPE,
+	LOGICAL_OR,
+	REDIR_IN,
+	REDIR_OUT,
+	REDIR_APPEND,
+	HEREDOC,
 }	t_token_type;
 
 typedef enum e_quote_type
@@ -187,24 +195,7 @@ int			ft_isdigit(int c);
 char		*ft_strjoin(const char *str1, const char *str2);
 int			ft_strcmp(const char *s1, const char *s2);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Mathieu
+//=========================== Exec ============================
 
 t_env		*extract_env(char **envp);
 void		clear_env(t_env **env);

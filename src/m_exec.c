@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/21 01:48:24 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/21 12:48:34 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,28 +86,33 @@ int	exec_command(t_command *command, t_env *env)
 	return (0);
 }
 
-int	exec_child(t_env *env, t_command *command, int in_fd, int out_fd, int pipe_fd[2], int is_piped)
+static void	_clean_fds(t_pipe_data *pipe_data)
+{
+	if (pipe_data->in_fd > 0)
+	{
+		dup2(pipe_data->in_fd, STDIN_FILENO);
+		close(pipe_data->in_fd);
+	}
+	if (pipe_data->is_piped)
+	{
+		close(pipe_data->pipe_fd[0]);
+		dup2(pipe_data->pipe_fd[1], STDOUT_FILENO);
+		close(pipe_data->pipe_fd[1]);
+	}
+	else if (pipe_data->out_fd > 1)
+	{
+		dup2(pipe_data->out_fd, STDOUT_FILENO);
+		close(pipe_data->out_fd);
+	}
+}
+
+int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 {
 	int	check_result;
 
 	if (!command || !command->cmd || !command->cmd->string)
 		exit(127);
-	if (in_fd > 0)
-	{
-		dup2(in_fd, STDIN_FILENO);
-		close(in_fd);
-	}
-	if (is_piped)
-	{
-		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-	}
-	else if (out_fd > 1)
-	{
-		dup2(out_fd, STDOUT_FILENO);
-		close(out_fd);
-	}
+	_clean_fds(pipe_data);
 	check_result = check_command(env, command);
 	if (check_result < 0)
 	{
