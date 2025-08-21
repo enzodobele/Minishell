@@ -13,7 +13,6 @@
 #ifndef M_MINISHELL_H
 # define M_MINISHELL_H
 
-# include "minishell.h"
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <linux/limits.h>

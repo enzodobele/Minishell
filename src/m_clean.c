@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "m_minishell.h"
 
 void	cleanup_minishell(char **input, t_token **token, t_command **cmd,
 			t_env *env)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "m_minishell.h"
+#include "minishell.h"
 
 static int	cd_to_home(t_env *env);
 static int	cd_to_oldpwd(t_env *env);

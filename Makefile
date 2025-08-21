@@ -52,6 +52,8 @@ SRC = \
 	m_exec.c \
 	m_pipeline.c \
 	m_redirect.c \
+	process_pre_parsing.c \
+	process_pre_parsing_bis.c \
 
 
 SRC_ALL = \

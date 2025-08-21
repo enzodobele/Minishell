@@ -1,4 +1,3 @@
-#include "../includes/m_minishell.h"
 #include "../includes/minishell.h"
 
 volatile sig_atomic_t g_interrupted = 0;
@@ -11,63 +10,6 @@ void	handle_sigint(int signum)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
-}
-
-int	has_unclosed_quotes(char *str)
-{
-	int		i;
-	char	quote;
-
-	i = 0;
-	quote = 0;
-	while (str[i])
-	{
-		if ((str[i] == '\'' || str[i] == '"'))
-		{
-			if (quote == 0)
-				quote = str[i];
-			else if (quote == str[i])
-				quote = 0;
-		}
-		i++;
-	}
-	return (quote != 0);
-}
-
-int	has_trailing_pipe(char *input)
-{
-	int	i;
-
-	if (!input)
-		return (0);
-	i = ft_strlen(input);
-	if (i == 0)
-		return (0);
-	i--;
-	while (i >= 0 && (input[i] == ' ' || input[i] == '\t'))
-		i--;
-	if (i >= 0 && input[i] == '|')
-		return (1);
-	return (0);
-}
-
-void	init_minishell(t_env **env, char **envp)
-{
-	*env = extract_env(envp);
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-char	*join_and_free(char *input, char *next_line)
-{
-	char	*joined;
-	char	*temp;
-
-	joined = ft_strjoin(input, "\n");
-	free(input);
-	temp = ft_strjoin(joined, next_line);
-	free(joined);
-	return (temp);
 }
 
 char	*handle_multiline_input(char *input)
@@ -96,37 +38,11 @@ char	*handle_multiline_input(char *input)
 	return (input);
 }
 
-int	validate_input_syntax(char *input)
+void	init_minishell(t_env **env, char **envp)
 {
-	if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
-	{
-		add_history(input);
-		return (0);
-	}
-	return (1);
-}
-
-int	process_tokens(char *input, t_token **token)
-{
-	if (!tokenizer(input, token, 0))
-		return (0);
-	if (!is_token_valid(*token))
-	{
-		add_history(input);
-		ft_tokenlstclear(token);
-		return (0);
-	}
-	return (1);
-}
-
-void	execute_command(t_token **token, t_env **env)
-{
-	t_command	*cmd;
-
-	cmd = parse_tokens(*token);
-	pipexecution(*env, cmd);
-	if (cmd)
-		free_command_chain(&cmd);
+	*env = extract_env(envp);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	minishell_loop(t_env **env, char *input, t_token *token)
@@ -156,27 +72,6 @@ void	minishell_loop(t_env **env, char *input, t_token *token)
 		if (token)
 			ft_tokenlstclear(&token);
 	}
-}
-
-int	has_leading_pipe(char *input)
-{
-	int	i;
-
-	i = 0;
-	while (input[i] == ' ' || input[i] == '\t')
-		i++;
-	if (input[i] == '|' && input[i + 1] && input[i + 1] == '|')
-	{
-		printf("Minishell : syntax error near unexpected token `||'\n");
-		return (1);
-	}
-	if (input[i] == '|')
-	{
-		add_history(input);
-		printf("Minishell: syntax error near unexpected token `|'\n");
-		return (1);
-	}
-	return (0);
 }
 
 int	main(int argc, char *argv[], char **envp)

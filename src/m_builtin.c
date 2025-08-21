@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "m_minishell.h"
+#include "minishell.h"
 
 int	handle_echo_n(t_command *command)
 {
