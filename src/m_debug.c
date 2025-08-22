@@ -40,7 +40,7 @@ void	debug_print_env(t_env *env)
 {
 	t_env_node	*current;
 
-	if (!env || !env->env_list)
+	if (!env || !env->env_list || !env->env_list->key)
 	{
 		printf("Environment is empty.\n");
 		return ;

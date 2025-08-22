@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:30:09 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/20 18:19:29 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/22 16:49:03 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,17 @@ t_env_node	*create_env_node(t_env *env, char *key, char *value)
 	if (!new_node)
 		return (NULL);
 	new_node->key = ft_strdup(key, ft_strlen(key), 0);
+	if (!new_node->key)
+		return (free(new_node), NULL);
 	if (value)
+	{
 		new_node->value = ft_strdup(value, ft_strlen(value), 0);
+		if (!new_node->value)
+		{
+			free(new_node->key);
+			return (free(new_node), NULL);
+		}
+	}
 	else
 		new_node->value = NULL;
 	new_node->next = NULL;
@@ -62,6 +71,11 @@ static t_env_node	*_extract_env_node(t_env *env, char *line)
 		return (NULL);
 	}
 	node = create_env_node(env, kval[0], kval[1]);
+	if (!node)
+	{
+		free_splitted(kval);
+		return (NULL);
+	}
 	free_splitted(kval);
 	return (node);
 }
@@ -81,6 +95,8 @@ t_env	*extract_env(char **envp)
 	while (*envp)
 	{
 		line = ft_strdup(*envp, ft_strlen(*envp), 0);
+		if (!line)
+			return (NULL);
 		node = _extract_env_node(new_env, line);
 		if (node && ft_strcmp(node->key, "PATH") == 0 && node->value)
 			new_env->path = ft_split(node->value, ':');

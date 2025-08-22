@@ -65,7 +65,6 @@ void	minishell_loop(t_env **env, char *input, t_token *token)
 		}
 		if (process_tokens(input, &token))
 		{
-			// test_parsing(token);
 			execute_command(&token, env);
 			add_history(input);
 		}
