@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/22 13:44:04 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/22 16:26:12 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 		handle_command_error(command, check_result);
 		exit(127);
 	}
+	expand_last_exit_status(env, command);
 	exec_command(command, env);
 	exit(127);
 }

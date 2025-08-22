@@ -219,7 +219,7 @@ int			print_export(t_env *env);
 int			exec_builtins(t_command *commands, t_env *env);
 int			pipexecution(t_env *env, t_command *cmd);
 int			exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data);
-
+void		expand_last_exit_status(t_env *env, t_command *command);
 
 // Command validation
 int			check_command(t_env *env, t_command *cmd);
@@ -248,6 +248,8 @@ size_t		ft_strlcpy(char *dst, const char *src, size_t dsize);
 char		*ft_strchr(const char *s, int c);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 void		ft_putstr_fd(char *s, int fd);
+char		*ft_itoa(int n);
+
 
 // Cleanup functions
 void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env *env);

@@ -13,6 +13,7 @@ LIBS = -lreadline
 LIBFT = \
 	ft_lstadd_back.c \
 	ft_strdup.c \
+	ft_itoa.c \
 	ft_strlen.c \
 	ft_lstclear.c \
 	ft_isalnum.c \
@@ -48,6 +49,7 @@ SRC = \
 	m_debug.c \
 	m_env_utils.c \
 	m_env.c \
+	m_expand.c \
 	m_error_handler.c \
 	m_exec.c \
 	m_fork.c \
