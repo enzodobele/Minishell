@@ -6,7 +6,7 @@
 /*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 13:12:16 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/22 13:42:22 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/22 15:14:38 by zoum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ int	fork_and_exec(t_env *env, t_command *command, t_pipe_data *pipe_data)
 	int	pid;
 
 	pipe_data->is_piped = (command->next != NULL);
-	if (ft_strcmp(command->cmd->string, "exit") == 0 && !pipe_data->is_piped)
+	if ((ft_strcmp(command->cmd->string, "exit") == 0 && !pipe_data->is_piped)
+		|| ft_strcmp(command->cmd->string, "cd") == 0
+		|| ft_strcmp(command->cmd->string, "export") == 0
+		|| ft_strcmp(command->cmd->string, "unset") == 0)
 		return (exec_builtins(command, env));
 	if (pipe_data->is_piped && pipe(pipe_data->pipe_fd) < 0)
 		return (handle_system_error("Pipe creation failed"), -1);
