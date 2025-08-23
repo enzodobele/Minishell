@@ -20,3 +20,16 @@ int	has_leading_pipe(char *input)
 	}
 	return (0);
 }
+
+int	process_tokens(char *input, t_token **token)
+{
+	if (!tokenizer(input, token, 0))
+		return (0);
+	if (!is_token_valid(*token))
+	{
+		add_history(input);
+		ft_tokenlstclear(token);
+		return (0);
+	}
+	return (1);
+}

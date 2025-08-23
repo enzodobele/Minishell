@@ -1,5 +1,7 @@
 #include "../includes/minishell.h"
 
+#include "../includes/minishell.h"
+
 char	*get_token_type_str(t_token_type type)
 {
 	if (type == WORD)
@@ -100,13 +102,13 @@ void	print_command_details(t_command *cmd, int cmd_count)
 	printf("  Pipe out: %s\n", cmd->pipe_out ? "YES" : "NO");
 }
 
-void	test_parsing(t_token *token)
+void	test_parsing(t_token *token, t_env **env)
 {
 	t_command	*commands;
 	t_command	*current;
 	int			cmd_count;
 
-	commands = parse_tokens(token);
+	commands = parse_tokens(token, env);
 	if (!commands)
 	{
 		printf("❌ Parsing failed!\n");

@@ -49,7 +49,8 @@ int	handle_word_expecting_file(t_parsing_state *state,
 	commands = NULL;
 	if (*state == EXPECTING_FILE)
 	{
-		if (!add_redir(*current_cmd, token->prev->type, token->string))
+		if (!add_redir(*current_cmd, token->prev->type,
+				token->string, token->quote_type))
 		{
 			handle_parsing_error(commands, *current_cmd);
 			return (0);

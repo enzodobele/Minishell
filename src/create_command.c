@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 t_command	*create_new_command(t_token *token)
 {
@@ -44,15 +44,16 @@ int	add_argument(t_command *current_command, t_token *token)
 	return (1);
 }
 
-t_redirect	*create_redirection(t_token_type type, char *filename)
+t_redirect	*create_redirection(t_token_type tp, char *file, t_quote_type quote)
 {
 	t_redirect	*new_redirect;
 
 	new_redirect = malloc(sizeof(t_redirect));
 	if (!new_redirect)
 		return (NULL);
-	new_redirect->type = type;
-	new_redirect->filename = ft_strdup(filename, ft_strlen(filename), 0);
+	new_redirect->type = tp;
+	new_redirect->filename = ft_strdup(file, ft_strlen(file), 0);
+	new_redirect->quote_type = quote;
 	if (!new_redirect->filename)
 	{
 		free(new_redirect);
@@ -77,7 +78,7 @@ void	add_redirect_to_list(t_redirect **redirects, t_redirect *new_redirect)
 	current->next = new_redirect;
 }
 
-t_command	*parse_tokens(t_token *token)
+t_command	*parse_tokens(t_token *token, t_env **env)
 {
 	t_parsing_state	state;
 	t_command		*commands;
@@ -94,5 +95,6 @@ t_command	*parse_tokens(t_token *token)
 	}
 	if (current_cmd)
 		ft_lstadd_back_command(&commands, current_cmd);
+	expand_structure_env_vars(commands, env);
 	return (commands);
 }

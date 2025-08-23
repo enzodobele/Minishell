@@ -18,16 +18,20 @@ LIBFT = \
 	ft_lstclear.c \
 	ft_isalnum.c \
 	ft_isalpha.c \
+	ft_strncpy.c \
 	ft_isdigit.c \
 	ft_strjoin.c \
 	is_char_token.c \
 	ft_strcmp.c \
 	ft_split.c \
+	ft_strcpy.c \
 	ft_strlcpy.c \
 	ft_strlcat.c \
 	ft_strchr.c \
 	ft_strncmp.c \
 	ft_putstr_fd.c \
+	ft_strdup_2.c \
+	print_syntaxe_error.c \
 
 SRC = \
 	main.c \
@@ -57,6 +61,9 @@ SRC = \
 	m_redirect.c \
 	process_pre_parsing.c \
 	process_pre_parsing_bis.c \
+	expand_var.c \
+	process_var.c \
+	expand_var_utils.c \
 
 
 SRC_ALL = \

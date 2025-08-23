@@ -79,6 +79,7 @@ typedef struct s_token
 	t_quote_type	quote_type;
 	struct s_token	*next;
 	struct s_token	*prev;
+	int				have_space;
 }	t_token;
 
 typedef struct s_token_data
@@ -92,6 +93,7 @@ typedef struct s_token_data
 typedef struct s_redirect
 {
 	t_token_type		type;
+	t_quote_type		quote_type;
 	char				*filename;
 	struct s_redirect	*next;
 }	t_redirect;
@@ -119,7 +121,20 @@ char		*get_redirect_type_str(t_token_type type);
 void		print_redirections(t_redirect *redirects);
 void		print_token_arguments(t_token **args);
 void		print_command_details(t_command *cmd, int cmd_count);
-void		test_parsing(t_token *token);
+void		test_parsing(t_token *token, t_env **envp);
+
+// $VAR
+char		*get_env_value(const char *var_name, t_env **env);
+int			contains_env_vars(const char *str);
+char		*expand_env_vars(const char *str, t_env **env);
+void		process_string(char **str_ptr, t_env **env);
+void		process_redirects(t_redirect *redirect, t_env **env);
+void		process_token(t_token *token, t_env **env);
+void		process_args(t_token **args, t_env **env);
+void		expand_structure_env_vars(t_command *commands, t_env **env);
+void		expand_any_string_with_quotes(char **str, t_env **env,
+				t_quote_type quote_type);
+char		*process_expansion(const char *str, t_env **env, char *res, int res_pos);
 
 //fonction minishell
 void		handle_sigint(int signum);
@@ -127,6 +142,7 @@ int			tokenizer(char *input, t_token **token, int i);
 int			is_char_symbol(char *input, t_token **token, int i);
 int			is_single_quote(t_token **token, char *input, int i);
 int			is_double_quote(t_token **token, char *input, int i);
+int			is_dollard(t_token **token, char *input, int i);
 int			add_new_token_word(int start, int i, t_token **token, char *input);
 int			is_special_char(char c);
 int			ft_isdigit(int c);
@@ -138,20 +154,26 @@ int			is_less_than_symbol(t_token **token, char *input, int i);
 int			is_pipe(t_token **token, char *input, int i);
 int			is_token_valid(t_token *token);
 int			has_leading_pipe(char *input);
+int			is_redirection_valid(t_token *token);
 int			is_redirection_syntax_valid(char *input);
+int			check_redirection_error(char *input, int i);
+void		print_syntax_error_doubles(char c);
+void		print_syntax_error_singles(char c);
+void		print_syntax_error_newlines(void);
+void		print_syntax_error_pipe(void);
 void		ft_lstadd_back_command(t_command **lst, t_command *new);
 t_command	*create_new_command(t_token *token);
 void		free_command_chain(t_command **command);
 void		free_command(t_command *cmd);
 int			add_argument(t_command *current_command, t_token *token);
-t_command	*parse_tokens(t_token *token);
+t_command	*parse_tokens(t_token *token, t_env **env);
 t_command	*handle_parsing_error(t_command **commands,
 				t_command *current_command);
 int			is_redirection_token(t_token_type type);
-int			add_redir(t_command *cmd, t_token_type type, char *filename);
+int			add_redir(t_command *cmd, t_token_type type, char *file, t_quote_type quote);
 void		add_redirect_to_list(t_redirect **redirects,
 				t_redirect *new_redirect);
-t_redirect	*create_redirection(t_token_type type, char *filename);
+t_redirect	*create_redirection(t_token_type tp, char *file, t_quote_type quote);
 char		*get_token_symbol(t_token_type type);
 int			handle_word_token(t_parsing_state *state, t_command **current_cmd,
 				t_token *token, t_command **commands);
@@ -196,6 +218,9 @@ int			ft_isalnum(int c);
 int			ft_isdigit(int c);
 char		*ft_strjoin(const char *str1, const char *str2);
 int			ft_strcmp(const char *s1, const char *s2);
+char		*ft_strcpy(char *dst, const char *src);
+char		*ft_strdup2(const char *s);
+char		*ft_strncpy(char *dst, const char *src, size_t len);
 
 //=========================== Exec ============================
 

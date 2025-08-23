@@ -1,12 +1,12 @@
 #include "../includes/minishell.h"
 
-int	add_redir(t_command *cmd, t_token_type type, char *filename)
+int	add_redir(t_command *cmd, t_token_type type, char *file, t_quote_type quote)
 {
 	t_redirect	*new_redirect;
 
-	if (!cmd || !filename)
+	if (!cmd || !file)
 		return (0);
-	new_redirect = create_redirection(type, filename);
+	new_redirect = create_redirection(type, file, quote);
 	if (!new_redirect)
 		return (0);
 	add_redirect_to_list(&(cmd->redirects), new_redirect);
