@@ -1,7 +1,5 @@
 #include "../includes/minishell.h"
 
-#include "../includes/minishell.h"
-
 char	*get_token_type_str(t_token_type type)
 {
 	if (type == WORD)
@@ -58,7 +56,8 @@ void	print_redirections(t_redirect *redirects)
 	while (current)
 	{
 		printf("    Redirection: %s %s\n", 
-			get_redirect_type_str(current->type), current->filename);
+			get_redirect_type_str(current->type), 
+			current->filename);
 		current = current->next;
 	}
 }
@@ -76,10 +75,11 @@ void	print_token_arguments(t_token **args)
 	i = 0;
 	while (args[i])
 	{
-		printf("      [%d] \"%s\" (type:%s, quote:%s)\n", i,
+		printf("      [%d] \"%s\" (type:%s, quote:%s, have_space:%s)\n", i,
 			args[i]->string ? args[i]->string : "(null)",
 			get_token_type_str(args[i]->type),
-			get_quote_type_str(args[i]->quote_type));
+			get_quote_type_str(args[i]->quote_type),
+			args[i]->have_space ? "YES" : "NO");
 		i++;
 	}
 }
