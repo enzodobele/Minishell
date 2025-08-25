@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_pipeline.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/22 16:29:07 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/25 15:46:54 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,26 +56,20 @@ static int	_get_last_output_fd(t_command *cmd, t_pipe_data *pipe_data)
 	return (-1);
 }
 
-static int	_get_last_input_fd(t_command *cmd)
+static int	_input_fd(t_redirect *redir, t_pipe_data *pipe_data)
 {
-	t_redirect	*redir;
 	int			fd;
 
 	fd = -1;
-	redir = cmd->redirects;
-	while (redir)
+	if (redir->type == REDIR_IN)
 	{
-		if (redir->type == REDIR_IN)
-		{
-			if (fd > 0)
-				close(fd);
-			fd = open(redir->filename, O_RDONLY);
-			if (fd < 0)
-				return (perror(redir->filename), -1);
-		}
-		redir = redir->next;
+		if (pipe_data->in_fd > 0)
+			close(pipe_data->in_fd);
+		fd = open(redir->filename, O_RDONLY);
+		if (fd < 0)
+			return (perror(redir->filename), -1);
 	}
-	return (fd);
+	pipe_data->redir_in_fd = fd;
 }
 
 static void	_pipexecution_clean_fds(t_pipe_data *pipe_data)
@@ -99,6 +93,29 @@ static void	_pipexecution_clean_fds(t_pipe_data *pipe_data)
 		pipe_data->in_fd = STDIN_FILENO;
 }
 
+static int	setup_redirections(t_redirect *redirect, t_pipe_data *pipe_data)
+{
+	pipe_data->redir_in_fd = -1;
+	pipe_data->out_fd = -1;
+	while (redirect && redirect->type)
+	{
+		if (redirect->type == REDIR_IN)
+		{
+			_input_fd(redirect, pipe_data);
+			if (pipe_data->redir_in_fd < 0)
+				return (-1);
+		}
+		if (redirect->type == REDIR_OUT || redirect->type == REDIR_APPEND)
+		{
+			pipe_data->out_fd = _get_last_output_fd(redirect, pipe_data);
+			if (pipe_data->outfile_error)
+				return (-1);
+		}
+		redirect = redirect->next;
+	}
+	return (0);
+}
+
 int	pipexecution(t_env *env, t_command *cmd)
 {
 	t_pipe_data	*pipe_data;
@@ -109,22 +126,10 @@ int	pipexecution(t_env *env, t_command *cmd)
 	*pipe_data = (t_pipe_data){0};
 	while (cmd)
 	{
-		pipe_data->redir_in_fd = -1;
-		pipe_data->out_fd = -1;
-		if (cmd && cmd->redirects && cmd->redirects->type
-			&& cmd->redirects->type == REDIR_IN)
+		if (setup_redirections(cmd, pipe_data) < 0)
 		{
-			pipe_data->redir_in_fd = _get_last_input_fd(cmd);
-			if (pipe_data->redir_in_fd < 0)
-				return (free(pipe_data), -1);
-		}
-		if (cmd && cmd->redirects && cmd->redirects->type
-			&& (cmd->redirects->type == REDIR_OUT
-				|| cmd->redirects->type == REDIR_APPEND))
-		{
-			pipe_data->out_fd = _get_last_output_fd(cmd, pipe_data);
-			if (pipe_data->outfile_error)
-				return (free(pipe_data), -1);
+			free(pipe_data);
+			return (-1);
 		}
 		_pipexecution_clean_fds(pipe_data);
 		pipe_data->in_fd = fork_and_exec(env, cmd, pipe_data);
