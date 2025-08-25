@@ -2,9 +2,12 @@
 
 mkdir -p ./tests/minishell
 mkdir -p ./tests/bash
+
 rm -f ./tests/minishell/*
 rm -f ./tests/bash/*
 rm -f ./tests/diff_*
+
+make
 
 cd tests/bash
 bash --posix < ../test_template.sh

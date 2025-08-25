@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_exec.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/22 16:26:12 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/25 18:19:47 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,18 +117,9 @@ static void	_clean_child_fds(t_pipe_data *pipe_data)
 
 int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 {
-	int	check_result;
-
 	if (!command || !command->cmd || !command->cmd->string)
 		exit(127);
 	_clean_child_fds(pipe_data);
-	check_result = check_command(env, command);
-	if (check_result < 0)
-	{
-		handle_command_error(command, check_result);
-		exit(127);
-	}
 	expand_last_exit_status(env, command);
-	exec_command(command, env);
-	exit(127);
+	exit(exec_command(command, env));
 }
