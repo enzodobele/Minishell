@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/21 12:30:59 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/25 18:36:26 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ int	handle_echo_n(t_command *command)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
+	while (command->args[++i] && ft_strcmp(command->args[i]->string, "-n") == 0)
+		;
 	while (command->args[i])
 	{
 		write(1, command->args[i]->string, ft_strlen(command->args[i]->string));
