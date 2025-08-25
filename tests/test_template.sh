@@ -62,12 +62,55 @@ echo "Test 1.15 : echo $? (code de sortie précédent)"
 echo $? > "test1.15.out"
 echo $? >> "test1.15.out"
 
-echo "Test 2 : cat < ../../Makefile"
-cat < ../../Makefile > "test2.out"
-echo $? >> "test2.out"
+echo "Test 1.16 : echo \"$MINISHELL\""
+echo "$MINISHELL" > "test1.16.out"
+echo $? >> "test1.16.out"
 
-echo "Test 3 : ls | wc -l"
-ls | wc -l > "test3.out"
-echo $? >> "test3.out"
+echo "Test 1.17 : echo Hello World minishell"
+echo Hello World minishell > "test1.17.out"
+echo $? >> "test1.17.out"
+
+echo "Test 1.18 : echo \"Hello     World\""
+echo "Hello     World" > "test1.18.out"
+echo $? >> "test1.18.out"
+
+echo "Test 1.19 : echo \"\" \"\""
+echo "" "" > "test1.19.out"
+echo $? >> "test1.19.out"
+
+echo "Test 1.20 : echo \$UNDEFINED"
+echo $UNDEFINED > "test1.20.out"
+echo $? >> "test1.20.out"
+
+echo "Test 1.21 : export TESTVAR=abc ; echo \$TESTVAR"
+export TESTVAR=abc
+echo $TESTVAR > "test1.21.out"
+echo $? >> "test1.21.out"
+
+echo "Test 1.22 : echo \"Value: \$USER\""
+echo "Value: $USER" > "test1.22.out"
+echo $? >> "test1.22.out"
+
+echo "Test 1.23 : echo \"Hello\$USERWorld\""
+echo "Hello$USERWorld" > "test1.23.out"
+echo $? >> "test1.23.out"
+
+echo "Test 1.24 : echo \"\$USER-\$PATH-\$HOME\""
+echo "$USER-$PATH-$HOME" > "test1.24.out"
+echo $? >> "test1.24.out"
+
+echo "Test 1.25 : echo -n \$USER"
+echo -n $USER > "test1.25.out"
+echo $? >> "test1.25.out"
+
+echo "Test 1.26 : echo \"\$USER!\""
+echo "$USER!" > "test1.26.out"
+echo $? >> "test1.26.out"
+
+echo "Test 1.27 : echo '\$USER'"
+echo '$USER' > "test1.27.out"
+echo $? >> "test1.27.out"
+
+
 
 exit

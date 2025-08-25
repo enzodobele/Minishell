@@ -20,10 +20,10 @@ diff_found=0
 for bash_file in ./tests/bash/test*.out; do
     test_name=$(basename "$bash_file")
     minishell_file="./tests/minishell/$test_name"
-    diff_file="./tests/diff_${test_name}"
+    diff_file="./tests/$test_name"
     diff -u "$bash_file" "$minishell_file" > "$diff_file"
     if [ ! -s "$diff_file" ]; then
-        rm -f "$diff_file"
+        rm -f "$diff_file" "$bash_file" "$minishell_file"
     else
         diff_found=1
     fi
