@@ -1,0 +1,12 @@
+Makefile
+divers
+docs
+includes
+minishell
+obj
+outfile
+run_valgrind.sh
+src
+test1.2.out
+tests
+usefull

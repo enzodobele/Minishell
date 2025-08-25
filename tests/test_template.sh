@@ -111,6 +111,8 @@ echo "Test 1.27 : echo '\$USER'"
 echo '$USER' > "test1.27.out"
 echo $? >> "test1.27.out"
 
-
+echo "Test 1.28 : echo \"\$USER!\""
+echo "$USER"$USER'$USER' > "test1.28.out"
+echo $? >> "test1.28.out"
 
 exit

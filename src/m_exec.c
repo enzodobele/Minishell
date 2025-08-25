@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/25 18:19:47 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/25 21:01:10 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,22 @@ char	**build_argv(t_command *command)
 		arg_count++;
 	argv = malloc(sizeof(char *) * (arg_count + 2));
 	if (!argv)
-	{
 		return (NULL);
-	}
 	argv[0] = command->cmd->string;
 	i = 0;
 	while (i < arg_count)
 	{
+		printf("Arg %d: |%s|\n", i, command->args[i]->string);
 		argv[i + 1] = command->args[i]->string;
 		i++;
 	}
 	argv[arg_count + 1] = NULL;
+	i = 0;
+	while (i < arg_count + 1)
+	{
+		printf("arg %d: |%s|\n", i, argv[i]);
+		i++;
+	}
 	return (argv);
 }
 
