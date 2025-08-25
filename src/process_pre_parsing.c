@@ -65,7 +65,7 @@ void	execute_command(t_token **token, t_env **env)
 	t_command	*cmd;
 
 	cmd = parse_tokens(*token, env);
-	test_parsing(*token, env);
+	// test_parsing(*token, env);
 	pipexecution(*env, cmd);
 	if (cmd)
 		free_command_chain(&cmd);

@@ -1,0 +1,33 @@
+# Tests de conformité minishell vs bash
+
+Ce dossier contient les scripts et fichiers nécessaires pour comparer le comportement de votre minishell avec celui de bash sur des commandes simples.
+
+## Structure
+
+- `test_bash.sh` : Script qui exécute des commandes dans bash et écrit les résultats (sortie + code de retour) dans `./tests/bash/`.
+- `test_minishell.sh` : Script qui exécute les mêmes commandes dans minishell et écrit les résultats dans `./tests/minishell/`.
+- `tester.sh` : Script principal qui :
+  - Nettoie les dossiers de résultats
+  - Exécute les deux scripts de test
+  - Compare chaque fichier de sortie entre bash et minishell
+  - Supprime les fichiers diff si les sorties sont identiques
+  - Affiche un message selon la présence ou non de différences
+
+## Utilisation
+
+1. Placez vos commandes de test dans `test_bash.sh` et `test_minishell.sh` (mêmes commandes pour comparer).
+2. Lancez le script principal :
+   ```bash
+   ./tests/tester.sh
+   ```
+3. Consultez les fichiers dans `./tests/bash/` et `./tests/minishell/` pour les résultats bruts.
+4. Si des différences sont détectées, elles seront listées dans des fichiers `diff_test*.out` dans `./tests/`.
+5. Un message s'affiche à la fin pour indiquer si tout est conforme ou non.
+
+## Ajouter des tests
+
+- Ajoutez simplement de nouveaux tests dans les deux scripts de test.
+- Les fichiers de sortie doivent suivre le format `testN.out` pour être pris en compte automatiquement.
+
+---
+Ce système permet de vérifier rapidement la conformité de votre minishell par rapport à bash sur les commandes et redirections
