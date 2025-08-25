@@ -38,7 +38,14 @@ int	handle_cd(t_env *env, t_command *command)
 		else if (path[0] == '~' && path[1] == '/')
 			result = cd_expand_tilde(env, path);
 		else
+		{
+			if (access(path, F_OK) != 0)
+			{
+				printf("Minishell: cd: %s: No such file or directory\n", path);
+				return (-1);
+			}
 			result = chdir(path);
+		}
 	}
 	if (result == 0)
 		update_oldpwd(env, pwd);
