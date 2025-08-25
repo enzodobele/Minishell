@@ -4,19 +4,18 @@ Ce dossier contient les scripts et fichiers nécessaires pour comparer le compor
 
 ## Structure
 
-- `test_bash.sh` : Script qui exécute des commandes dans bash et écrit les résultats (sortie + code de retour) dans `./tests/bash/`.
-- `test_minishell.sh` : Script qui exécute les mêmes commandes dans minishell et écrit les résultats dans `./tests/minishell/`.
+- `test_template.sh` : Script qui exécute des commandes dans bash et écrit les résultats (sortie + code de retour).
 - `tester.sh` : Script principal qui :
   - Nettoie les dossiers de résultats
-  - Exécute les deux scripts de test
+  - Exécute le script de tests en se deplacant dans les repertoires
   - Compare chaque fichier de sortie entre bash et minishell
   - Supprime les fichiers diff si les sorties sont identiques
   - Affiche un message selon la présence ou non de différences
 
 ## Utilisation
 
-1. Placez vos commandes de test dans `test_bash.sh` et `test_minishell.sh` (mêmes commandes pour comparer).
-2. Lancez le script principal :
+1. Placez vos commandes de test dans `test_template.sh`.
+2. Lancez le script principal depuis le repertoire minishell:
    ```bash
    ./tests/tester.sh
    ```
@@ -26,7 +25,7 @@ Ce dossier contient les scripts et fichiers nécessaires pour comparer le compor
 
 ## Ajouter des tests
 
-- Ajoutez simplement de nouveaux tests dans les deux scripts de test.
+- Ajoutez simplement de nouveaux tests dans le template.
 - Les fichiers de sortie doivent suivre le format `testN.out` pour être pris en compte automatiquement.
 
 ---

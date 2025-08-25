@@ -6,8 +6,11 @@ rm -f ./tests/minishell/*
 rm -f ./tests/bash/*
 rm -f ./tests/diff_*
 
-bash --posix < ./tests/test_bash.sh
-./minishell < ./tests/test_minishell.sh
+cd tests/bash
+bash --posix < ../test_template.sh
+cd ../minishell
+../../minishell < ../test_template.sh
+cd ../..
 
 diff_found=0
 
