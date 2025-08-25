@@ -131,10 +131,15 @@ void		process_string(char **str_ptr, t_env **env);
 void		process_redirects(t_redirect *redirect, t_env **env);
 void		process_token(t_token *token, t_env **env);
 void		process_args(t_token **args, t_env **env);
+int			extract_var_name(const char *str, int *i, char *var_name);
+void		ft_itoa_into(char *buf, int n);
 void		expand_structure_env_vars(t_command *commands, t_env **env);
+int			handle_env_var(const char *str, int *i, char *res, int *res_pos, t_env **env);
+char		*copy_env_value(char *result, int *result_pos, char *env_value);
 void		expand_any_string_with_quotes(char **str, t_env **env,
 				t_quote_type quote_type);
 char		*process_expansion(const char *str, t_env **env, char *res, int res_pos);
+int			handle_exit_status(char *res, int *res_pos, t_env **env);
 
 //fonction minishell
 void		handle_sigint(int signum);

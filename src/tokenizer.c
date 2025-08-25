@@ -62,8 +62,6 @@ int	is_char_symbol(char *input, t_token **token, int i)
 		return (is_single_quote(token, input, i));
 	else if (input[i] == '"')
 		return (is_double_quote(token, input, i));
-	else if (input[i] == '$')
-		return (is_dollard(token, input ,i));
 	return (1);
 }
 
@@ -79,12 +77,6 @@ int	create_token(t_token_data data, char *input, t_token **token)
 		return (perror("Malloc failed"), free(new_token), 0);
 	new_token->type = data.type;
 	new_token->quote_type = data.quote;
-	if (input[data.start + data.len] == ' ' 
-			|| input[data.start + data.len] == '\t' 
-			|| input[data.start + data.len] == '\n')
-		new_token->have_space = 1;
-	else
-		new_token->have_space = 0;
 	new_token->next = NULL;
 	new_token->prev = NULL;
 	ft_lstadd_back(token, new_token);

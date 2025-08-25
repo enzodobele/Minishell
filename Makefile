@@ -32,6 +32,7 @@ LIBFT = \
 	ft_putstr_fd.c \
 	ft_strdup_2.c \
 	print_syntaxe_error.c \
+	hangle_exit_var.c \
 
 SRC = \
 	main.c \

@@ -52,25 +52,17 @@ int	extract_var_name(const char *str, int *i, char *var_name)
 
 char	*process_expansion(const char *str, t_env **env, char *res, int res_pos)
 {
-	char	var_name[256];
-	int		i;
-	int		var_len;
-	char	*env_value;
+	int	i;
 
 	i = 0;
 	while (str[i] && res_pos < 2047)
 	{
 		if (str[i] == '$')
 		{
-			var_len = extract_var_name(str, &i, var_name);
-			if (var_len > 0)
-			{
-				env_value = get_env_value(var_name, env);
-				if (env_value)
-					copy_env_value(res, &res_pos, env_value);
-			}
+			if (str[i + 1] == '?')
+				i += handle_exit_status(res, &res_pos, env);
 			else
-				res[res_pos++] = '$';
+				handle_env_var(str, &i, res, &res_pos, env);
 		}
 		else
 			res[res_pos++] = str[i++];

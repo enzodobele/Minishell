@@ -41,3 +41,32 @@ int	contains_env_vars(const char *str)
 		return (1);
 	return (0);
 }
+
+void	ft_itoa_into(char *buf, int n)
+{
+	long	num;
+	int		len;
+	int		tmp;
+
+	num = n;
+	len = (num <= 0);
+	tmp = num;
+	while (tmp != 0)
+	{
+		tmp /= 10;
+		len++;
+	}
+	buf[len] = '\0';
+	if (num == 0)
+		buf[0] = '0';
+	if (num < 0)
+	{
+		buf[0] = '-';
+		num = -num;
+	}
+	while (num > 0)
+	{
+		buf[--len] = (num % 10) + '0';
+		num /= 10;
+	}
+}
