@@ -143,12 +143,13 @@ char		*process_expansion(const char *str, t_env **env, char *res, int res_pos);
 int			handle_exit_status(char *res, int *res_pos, t_env **env);
 
 //fonction minishell
+char		*create_input_history(int len, char *input, int j);
+void		add_history_perso(char *input);
 void		handle_sigint(int signum);
 int			tokenizer(char *input, t_token **token, int i);
 int			is_char_symbol(char *input, t_token **token, int i);
 int			is_single_quote(t_token **token, char *input, int i);
 int			is_double_quote(t_token **token, char *input, int i);
-int			is_dollard(t_token **token, char *input, int i);
 int			add_new_token_word(int start, int i, t_token **token, char *input);
 int			is_special_char(char c);
 int			ft_isdigit(int c);
@@ -161,7 +162,8 @@ int			is_pipe(t_token **token, char *input, int i);
 int			is_token_valid(t_token *token);
 int			has_leading_pipe(char *input);
 int			is_redirection_valid(t_token *token);
-int			is_redirection_syntax_valid(char *input);
+int			is_redirection_syntax_valid(char *input, int i);
+int			validate_redirection_at(char *input, int i);
 int			check_redirection_error(char *input, int i);
 void		print_syntax_error_doubles(char c);
 void		print_syntax_error_singles(char c);

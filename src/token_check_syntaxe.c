@@ -4,19 +4,24 @@ int	is_token_valid(t_token *token)
 {
 	t_token	*next_token;
 
+	if (!token)
+		return (0);
 	while (token)
 	{
 		next_token = token->next;
-		if (token -> type == PIPE || token -> type == LOGICAL_OR)
+		if (token->type == PIPE || token->type == LOGICAL_OR)
 		{
-			if (token -> type == LOGICAL_OR)
+			if (token->type == LOGICAL_OR)
 				return (printf("LOGICAL OR not handled\n"), 0);
-			if (next_token -> type == PIPE)
+			if (!next_token || next_token->type == PIPE)
 				return (print_syntax_error_pipe(), 0);
 		}
-		if (token -> type == REDIR_IN && next_token -> type == PIPE)
-			return (print_syntax_error_pipe(), 0);
-		token = token -> next;
+		if (token->type == REDIR_IN)
+		{
+			if (!next_token || next_token->type == PIPE)
+				return (print_syntax_error_pipe(), 0);
+		}
+		token = token->next;
 	}
 	return (1);
 }
@@ -49,29 +54,47 @@ int	check_redirection_error(char *input, int i)
 	return (0);
 }
 
-int	is_redirection_syntax_valid(char *input)
+int	validate_redirection_at(char *input, int i)
 {
-	int		i;
+	int		j;
 	char	redir_char;
-	int		error;
 
-	i = 0;
-	while (input[i])
+	j = i;
+	redir_char = input[i];
+	if (input[j + 1] && input[j + 1] == redir_char)
+		j++;
+	j++;
+	while (input[j] && (input[j] == ' ' || input[j] == '\t'))
+		j++;
+	if (check_redirection_error(input, j))
+		return (1);
+	return (j);
+}
+
+int	is_redirection_syntax_valid(char *input, int i)
+{
+	char	c;
+	char	in_quote;
+	int		next;
+
+	in_quote = 0;
+	while (input[++i])
 	{
-		if (input[i] == '>' || input[i] == '<')
+		c = input[i];
+		if ((c == '\'' || c == '"'))
 		{
-			redir_char = input[i];
-			i++;
-			if (input[i] == redir_char)
-				i++;
-			while (input[i] && (input[i] == ' ' || input[i] == '\t'))
-				i++;
-			error = check_redirection_error(input, i);
-			if (error)
-				return (error);
+			if (!in_quote)
+				in_quote = c;
+			else if (in_quote == c)
+				in_quote = 0;
 		}
-		else
-			i++;
+		else if (!in_quote && (c == '>' || c == '<'))
+		{
+			next = validate_redirection_at(input, i);
+			if (next == 1)
+				return (1);
+			i = next - 1;
+		}
 	}
 	return (0);
 }
@@ -101,21 +124,4 @@ int	is_redirection_valid(t_token *token)
 		current = current->next;
 	}
 	return (1);
-}
-
-char	*get_token_symbol(t_token_type type)
-{
-	if (type == PIPE)
-		return ("|");
-	else if (type == REDIR_OUT)
-		return (">");
-	else if (type == REDIR_IN)
-		return ("<");
-	else if (type == REDIR_APPEND)
-		return (">>");
-	else if (type == HEREDOC)
-		return ("<<");
-	else if (type == LOGICAL_OR)
-		return ("||");
-	return ("unknown");
 }

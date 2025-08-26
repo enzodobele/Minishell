@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-volatile sig_atomic_t g_interrupted = 0;
+static int	g_interrupted = 0;
 
 void	handle_sigint(int signum)
 {
@@ -21,10 +21,11 @@ char	*handle_multiline_input(char *input)
 		next_line = readline("> ");
 		if (g_interrupted)
 		{
+			add_history_perso(input);
 			free(input);
 			input = ft_strdup("", 0, 0);
 			g_interrupted = 0;
-			break ;
+			return (input);
 		}
 		if (!next_line)
 		{
@@ -66,7 +67,7 @@ void	minishell_loop(t_env **env, char *input, t_token *token)
 		if (process_tokens(input, &token))
 		{
 			execute_command(&token, env);
-			add_history(input);
+			add_history_perso(input);
 		}
 		free(input);
 		if (token)
