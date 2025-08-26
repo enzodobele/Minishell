@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-static int	cd_to_home(t_env *env);
-static int	cd_to_oldpwd(t_env *env);
-static int	cd_expand_tilde(t_env *env, char *path);
+// static int	cd_to_home(t_env *env);
+// static int	cd_to_oldpwd(t_env *env);
+// static int	cd_expand_tilde(t_env *env, char *path);
 static void	update_oldpwd(t_env *env, char *old_pwd);
 
 int	handle_cd(t_env *env, t_command *command)
@@ -28,73 +28,64 @@ int	handle_cd(t_env *env, t_command *command)
 		return (-1);
 	if (!command->args || !command->args[0] || !command->args[0]->string
 		|| command->args[0]->string[0] == '\0')
-		result = cd_to_home(env);
+		return (-1);
+	path = command->args[0]->string;
+	if (access(path, F_OK) != 0)
+		return (handle_cd_error(command, 1), 1);
+	else if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
+		return (handle_cd_error(command, 2), 1);
+	else if (access(path, X_OK) != 0)
+		return (handle_cd_error(command, 3), 1);
 	else
-	{
-		path = command->args[0]->string;
-		if (ft_strcmp(path, "~") == 0)
-			result = cd_to_home(env);
-		else if (ft_strcmp(path, "-") == 0)
-			result = cd_to_oldpwd(env);
-		else if (path[0] == '~' && path[1] == '/')
-			result = cd_expand_tilde(env, path);
-		else if (access(path, F_OK) != 0)
-			return (handle_cd_error(command, 1), 1);
-		else if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
-			return (handle_cd_error(command, 2), 1);
-		else if (access(path, X_OK) != 0)
-			return (handle_cd_error(command, 3), 1);
-		else
-			result = chdir(path);
-	}
+		result = chdir(path);
 	if (result == 0)
 		update_oldpwd(env, pwd);
 	return (result);
 }
 
-static int	cd_to_home(t_env *env)
-{
-	t_env_node	*home_node;
+// static int	cd_to_home(t_env *env)
+// {
+// 	t_env_node	*home_node;
 
-	home_node = get_env(env, "HOME");
-	if (!home_node || !home_node->value)
-	{
-		printf("Minishell: cd: HOME not set\n");
-		return (-1);
-	}
-	return (chdir(home_node->value));
-}
+// 	home_node = get_env(env, "HOME");
+// 	if (!home_node || !home_node->value)
+// 	{
+// 		printf("Minishell: cd: HOME not set\n");
+// 		return (-1);
+// 	}
+// 	return (chdir(home_node->value));
+// }
 
-static int	cd_to_oldpwd(t_env *env)
-{
-	t_env_node	*oldpwd_node;
+// static int	cd_to_oldpwd(t_env *env)
+// {
+// 	t_env_node	*oldpwd_node;
 
-	oldpwd_node = get_env(env, "OLDPWD");
-	if (!oldpwd_node || !oldpwd_node->value)
-	{
-		printf("Minishell: cd: OLDPWD not set\n");
-		return (-1);
-	}
-	printf("%s\n", oldpwd_node->value);
-	return (chdir(oldpwd_node->value));
-}
+// 	oldpwd_node = get_env(env, "OLDPWD");
+// 	if (!oldpwd_node || !oldpwd_node->value)
+// 	{
+// 		printf("Minishell: cd: OLDPWD not set\n");
+// 		return (-1);
+// 	}
+// 	printf("%s\n", oldpwd_node->value);
+// 	return (chdir(oldpwd_node->value));
+// }
 
-static int	cd_expand_tilde(t_env *env, char *path)
-{
-	t_env_node	*home_node;
-	char		*full_path;
-	int			result;
+// static int	cd_expand_tilde(t_env *env, char *path)
+// {
+// 	t_env_node	*home_node;
+// 	char		*full_path;
+// 	int			result;
 
-	home_node = get_env(env, "HOME");
-	if (!home_node || !home_node->value)
-		return (-1);
-	full_path = ft_strjoin(home_node->value, path + 1);
-	if (!full_path)
-		return (-1);
-	result = chdir(full_path);
-	free(full_path);
-	return (result);
-}
+// 	home_node = get_env(env, "HOME");
+// 	if (!home_node || !home_node->value)
+// 		return (-1);
+// 	full_path = ft_strjoin(home_node->value, path + 1);
+// 	if (!full_path)
+// 		return (-1);
+// 	result = chdir(full_path);
+// 	free(full_path);
+// 	return (result);
+// }
 
 static void	update_oldpwd(t_env *env, char *old_pwd)
 {
