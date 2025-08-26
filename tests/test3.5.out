@@ -1,0 +1,11 @@
+./tests/bash/test3.5.out
+./tests/minishell/test3.5.out
+
+--- ./tests/bash/test3.5.out	2025-08-26 18:39:36.365396987 +0200
++++ ./tests/minishell/test3.5.out	2025-08-26 18:39:36.461399011 +0200
+@@ -1,4 +1,4 @@
+ 0
+ 
+ 0
+-1
++0

@@ -35,6 +35,7 @@ for bash_file in ./tests/bash/test*.out; do
         rm -f "$diff_file" "$bash_file" "$minishell_file"
         success_tests=$((success_tests + 1))
     else
+        sed -i "1i$bash_file\n$minishell_file\n" "$diff_file"
         fail_tests=$((fail_tests + 1))
     fi
 done
@@ -48,6 +49,12 @@ if [ "$fail_tests" -gt 0 ]; then
 else
     echo "✅ Tous les tests sont identiques entre bash et minishell."
 fi
+
+for diff_file in ./tests/test*.out; do
+    echo "=== $diff_file ==="
+    cat "$diff_file"
+    echo ""
+done
 
 unset DIR
 unset PROJECT_PATH

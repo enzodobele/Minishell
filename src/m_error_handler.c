@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:15:00 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 15:49:54 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 18:31:48 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,13 @@ static void	print_permission_denied_error(const char *command)
 	ft_putstr_fd("pipex: ", 2);
 	ft_putstr_fd((char *)command, 2);
 	ft_putstr_fd(": Permission denied\n", 2);
+}
+
+void	handle_export_error(char *arg)
+{
+	ft_putstr_fd("Minishell: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
 }
 
 void	handle_cd_error(t_command *command, int result)

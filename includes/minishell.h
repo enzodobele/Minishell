@@ -284,6 +284,7 @@ void		ft_putstr_fd(char *s, int fd);
 char		*ft_itoa(int n);
 
 void		handle_cd_error(t_command *command, int result);
+void		handle_export_error(char *arg);
 // Cleanup functions
 void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env *env);
 void		cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env *env);

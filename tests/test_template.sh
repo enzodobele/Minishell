@@ -167,14 +167,87 @@ pwd > "$DIR/test2.7.out"
 echo $? >> "$DIR/test2.7.out"
 cd "$DIR"
 
-
 echo "Test 3 : env"
 env | grep "USER" > "test3.out"
 echo $? >> "test3.out"
 
-echo "Test 4 : export"
-export | grep "USER" > "test4.out"
-echo $? >> "test4.out"
+echo "Test 3.1 : export TESTVAR=abc"
+export TESTVAR=abc
+echo $? >> "test3.1.out"
 
+echo "Test 3.2 : unset TESTVAR"
+unset TESTVAR
+echo $? >> "test3.2.out"
+
+echo "Test 3.3 : export TESTVAR=abc ; env | grep TESTVAR"
+export TESTVAR=abc
+echo $? >> "test3.3.out"
+env | grep TESTVAR >> "test3.3.out"
+echo $? >> "test3.3.out"
+unset TESTVAR
+echo $? >> "test3.3.out"
+
+echo "Test 3.4 : export VAR1=hello VAR2=world ; echo \$VAR1 \$VAR2 ; env | grep VAR1 ; unset VAR1 ; echo \$VAR1"
+export VAR1=hello VAR2=world
+echo $? >> "test3.4.out"
+echo "$VAR1 $VAR2" >> "test3.4.out"
+echo $? >> "test3.4.out"
+env | grep VAR1 >> "test3.4.out"
+echo $? >> "test3.4.out"
+unset VAR1
+echo $? >> "test3.4.out"
+echo "$VAR1" >> "test3.4.out"
+echo $? >> "test3.4.out"
+unset VAR2
+
+echo "Test 3.5 : export EMPTY ; echo \$EMPTY ; env | grep EMPTY"
+export EMPTY
+echo $? >> "test3.5.out"
+echo "$EMPTY" >> "test3.5.out"
+echo $? >> "test3.5.out"
+env | grep EMPTY >> "test3.5.out"
+echo $? >> "test3.5.out"
+unset EMPTY
+
+echo "Test 3.6 : export EMPTY= ; echo \$EMPTY ; env | grep EMPTY"
+export EMPTY=
+echo $? >> "test3.6.out"
+echo "$EMPTY" >> "test3.6.out"
+echo $? >> "test3.6.out"
+env | grep EMPTY >> "test3.6.out"
+echo $? >> "test3.6.out"
+unset EMPTY
+
+echo "Test 3.7 : export TESTVAR=abc ; export TESTVAR=def ; echo \$TESTVAR"
+export TESTVAR=abc
+echo $? >> "test3.7.out"
+export TESTVAR=def
+echo $? >> "test3.7.out"
+echo "$TESTVAR" >> "test3.7.out"
+echo $? >> "test3.7.out"
+unset TESTVAR
+
+echo "Test 3.8 : unset UNDEFINED"
+unset UNDEFINED
+echo $? >> "test3.8.out"
+
+echo "Test 3.9 : export 1INVALID=abc"
+export 1INVALID=abc
+echo $? >> "test3.9.out"
+unset 1INVALID
+
+echo "Test 3.10 : export A=1 B=2 C=3 ; echo \$A \$B \$C"
+export A=1 B=2 C=3
+echo $? >> "test3.10.out"
+echo "$A $B $C" >> "test3.10.out"
+echo $? >> "test3.10.out"
+unset A B C
+
+echo "Test 3.11 : export SPACED = spaced"
+export SPACED = spaced
+echo $? >> "test3.11.out"
+echo "$SPACED" >> "test3.11.out"
+echo $? >> "test3.11.out"
+unset SPACED
 
 exit

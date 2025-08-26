@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 16:54:38 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/26 17:22:47 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 18:37:23 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,25 @@
 
 static int	_print_export(t_env *env)
 {
-	// t_env_node	*current;
+	t_env_node	*current;
 
 	if (!env)
 		return (0);
-	// current = env->env_list;
-	// while (current)
-	// {
-	// 	if (current->value)
-	// 		printf("declare -x %s=\"%s\"\n", current->key, current->value);
-	// 	else
-	// 		printf("declare -x %s\n", current->key);
-	// 	current = current->next;
-	// }
-	printf("Export MINISHELL : to the trash !!!\n");
-	printf("Thanks to the man !\n");
-	printf("Undefined behavior means i can do anything i want\n");
+	current = env->env_list;
+	while (current)
+	{
+		if (current->value)
+			printf("export %s=\"%s\"\n", current->key, current->value);
+		else
+			printf("export %s\n", current->key);
+		current = current->next;
+	}
+	printf("x===================================================x\n");
+	printf("| Export MINISHELL : to the trash !!!               |\n");
+	printf("| Thanks to the man !                               |\n");
+	printf("| Undefined behavior means i can do anything i want |\n");
+	printf("x===================================================x\n");
+
 	return (0);
 }
 
@@ -57,19 +60,44 @@ static void	_create_env_node(t_env *env, char **kval)
 	}
 }
 
+static int	_check_key_validity(char *key)
+{
+	int	i;
+
+	if (!key || !key[0])
+		return (1);
+	if ((key[0] >= '0' && key[0] <= '9') || key[0] == '=')
+		return (1);
+	i = 0;
+	while (key[i] && key[i] != '=')
+	{
+		if (!(ft_isalnum(key[i]) || key[i] == '_'))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	handle_export(t_env *env, t_command *command)
 {
 	char		**kval;
 	int			i;
 	t_env_node	*node;
+	int			ret;
 
+	ret = 0;
 	if (!command->args || !command->args[0])
 		return (_print_export(env));
 	i = 0;
 	while (command->args[i])
 	{
 		kval = ft_split(command->args[i]->string, '=');
-		if (kval && kval[0])
+		if (_check_key_validity(kval[0]))
+		{
+			handle_export_error(command->args[i]->string);
+			ret = 1;
+		}
+		else
 		{
 			node = get_env(env, kval[0]);
 			if (node)
@@ -81,5 +109,5 @@ int	handle_export(t_env *env, t_command *command)
 			free_splitted(kval);
 		i++;
 	}
-	return (0);
+	return (ret);
 }
