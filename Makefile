@@ -31,6 +31,7 @@ LIBFT = \
 	ft_strncmp.c \
 	ft_putstr_fd.c \
 	ft_strdup_2.c \
+	ft_substr.c \
 	print_syntaxe_error.c \
 	hangle_exit_var.c \
 
@@ -58,6 +59,7 @@ SRC = \
 	m_error_handler.c \
 	m_exec.c \
 	m_fork.c \
+	m_heredoc.c \
 	m_pipeline.c \
 	m_redirect.c \
 	process_pre_parsing.c \

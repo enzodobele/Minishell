@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 16:34:19 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 21:35:29 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,13 @@ char	**build_argv(t_command *command)
 	i = 0;
 	while (i < arg_count)
 	{
-		// printf("Arg %d: |%s|\n", i, command->args[i]->string);
 		argv[i + 1] = command->args[i]->string;
 		i++;
 	}
 	argv[arg_count + 1] = NULL;
 	i = 0;
 	while (i < arg_count + 1)
-	{
-		// printf("arg %d: |%s|\n", i, argv[i]);
 		i++;
-	}
 	return (argv);
 }
 
@@ -124,7 +120,5 @@ int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 		exit(127);
 	_clean_child_fds(pipe_data);
 	expand_last_exit_status(env, command);
-	int res = exec_command(command, env);
-	// printf("[DEBUG][exec_child] exec_command returned %d\n", res);
-	exit(res);
+	exit(exec_command(command, env));
 }

@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 16:31:57 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 21:40:40 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	_output_fd(t_redirect *redir, t_pipe_data *pipe_data)
 	return (fd);
 }
 
-static int	_input_fd(t_redirect *redir, t_pipe_data *pipe_data)
+static int	_input_fd(t_env *env, t_redirect *redir, t_pipe_data *pipe_data)
 {
 	int			fd;
 
@@ -45,6 +45,14 @@ static int	_input_fd(t_redirect *redir, t_pipe_data *pipe_data)
 		fd = open(redir->filename, O_RDONLY);
 		if (fd < 0)
 			return (perror(redir->filename), -1);
+	}
+	if (redir->type == HEREDOC)
+	{
+		if (pipe_data->in_fd > 0)
+			close(pipe_data->in_fd);
+		fd = heredoc_handler(env, redir->filename);
+		if (fd < 0)
+			return (-111);
 	}
 	pipe_data->redir_in_fd = fd;
 	return (fd);
@@ -72,16 +80,17 @@ static void	_pipexecution_clean_fds(t_pipe_data *pipe_data)
 		pipe_data->in_fd = STDIN_FILENO;
 }
 
-static int	setup_redirections(t_redirect *redirect, t_pipe_data *pipe_data)
+static int	setup_redirections(t_env *env, t_redirect *redirect,
+				t_pipe_data *pipe_data)
 {
 	pipe_data->redir_in_fd = -1;
 	pipe_data->out_fd = -1;
 	pipe_data->outfile_error = 0;
 	while (redirect && redirect->type)
 	{
-		if (redirect->type == REDIR_IN)
+		if (redirect->type == REDIR_IN || redirect->type == HEREDOC)
 		{
-			if (_input_fd(redirect, pipe_data) < 0)
+			if (_input_fd(env, redirect, pipe_data) < 0)
 				return (-1);
 		}
 		if (redirect->type == REDIR_OUT || redirect->type == REDIR_APPEND)
@@ -104,7 +113,7 @@ int	pipexecution(t_env *env, t_command *cmd)
 	*pipe_data = (t_pipe_data){0};
 	while (cmd)
 	{
-		if (setup_redirections(cmd->redirects, pipe_data) < 0)
+		if (setup_redirections(env, cmd->redirects, pipe_data) < 0)
 		{
 			free(pipe_data);
 			return (env->last_exit_status = wait_for_children(), -1);

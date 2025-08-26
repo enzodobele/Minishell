@@ -232,6 +232,8 @@ char		*ft_strncpy(char *dst, const char *src, size_t len);
 
 //=========================== Exec ============================
 
+int			heredoc_handler(t_env *env, char *delimiter);
+
 t_env		*extract_env(char **envp);
 void		clear_env(t_env **env);
 void		add_env_node(t_env *env, t_env_node *new_node);
@@ -282,6 +284,7 @@ char		*ft_strchr(const char *s, int c);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 void		ft_putstr_fd(char *s, int fd);
 char		*ft_itoa(int n);
+char		*ft_substr(const char *s, unsigned int start, size_t len);
 
 void		handle_cd_error(t_command *command, int result);
 void		handle_export_error(char *arg);
