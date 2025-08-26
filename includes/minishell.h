@@ -266,7 +266,7 @@ void		handle_system_error(const char *error_msg);
 
 int			fork_and_exec(t_env *env, t_command *command,
 				t_pipe_data *pipe_data);
-int			wait_for_children(t_env *env);
+int			wait_for_children(void);
 
 void		debug_print_token(t_token *token);
 void		debug_print_all_tokens(t_token *token);

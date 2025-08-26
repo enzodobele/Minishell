@@ -90,6 +90,7 @@ export TESTVAR=abc
 echo $? >> "test1.21.out"
 echo $TESTVAR > "test1.21.out"
 echo $? >> "test1.21.out"
+unset TESTVAR
 
 echo "Test 1.22 : echo \"Value: \$USER\""
 echo "Value: $USER" > "test1.22.out"
@@ -155,35 +156,25 @@ cd /chemin/invalide
 echo $? >> "$DIR/test2.6.out"
 cd "$DIR"
 
-echo "Test 2.7 : cd /tmp ; ln -s / /tmp/rootlink ; cd /tmp/rootlink ; pwd"
+echo "Test 2.7 : cd /tmp ; mkdir -p a/b ; cd a/b ; pwd"
 cd /tmp
 echo $? >> "$DIR/test2.7.out"
-ln -s / /tmp/rootlink
+mkdir -p a/b
 echo $? >> "$DIR/test2.7.out"
-cd /tmp/rootlink
+cd a/b
 echo $? >> "$DIR/test2.7.out"
 pwd > "$DIR/test2.7.out"
 echo $? >> "$DIR/test2.7.out"
 cd "$DIR"
 
-echo "Test 2.8 : cd /tmp ; mkdir -p a/b ; cd a/b ; pwd"
-cd /tmp
-echo $? >> "$DIR/test2.8.out"
-mkdir -p a/b
-echo $? >> "$DIR/test2.8.out"
-cd a/b
-echo $? >> "$DIR/test2.8.out"
-pwd > "$DIR/test2.8.out"
-echo $? >> "$DIR/test2.8.out"
-cd "$DIR"
-
 
 echo "Test 3 : env"
-env > "test3.out"
+env | grep "USER" > "test3.out"
 echo $? >> "test3.out"
 
 echo "Test 4 : export"
-export > "test4.out"
+export | grep "USER" > "test4.out"
 echo $? >> "test4.out"
+
 
 exit

@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 13:12:16 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 16:08:12 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 17:07:52 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	fork_and_exec(t_env *env, t_command *command, t_pipe_data *pipe_data)
 	return (-1);
 }
 
-int	wait_for_children(t_env *env)
+int	wait_for_children(void)
 {
 	int		status;
 	int		last_exit_status;
@@ -74,7 +74,6 @@ int	wait_for_children(t_env *env)
 	waited_pid = 1;
 	while (waited_pid > 0)
 	{
-		printf("[DEBUG][wait_for_children] %d\n", env->last_exit_status);
 		waited_pid = wait(&status);
 		if (waited_pid < 0)
 			break ;
@@ -87,7 +86,5 @@ int	wait_for_children(t_env *env)
 				last_exit_status = 128 + sig;
 		}
 	}
-	env->last_exit_status = last_exit_status;
-	printf("[DEBUG][wait_for_children] after loop %d\n", env->last_exit_status);
 	return (last_exit_status);
 }
