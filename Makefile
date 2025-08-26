@@ -65,6 +65,7 @@ SRC = \
 	expand_var.c \
 	process_var.c \
 	expand_var_utils.c \
+	add_history.c \
 
 
 SRC_ALL = \

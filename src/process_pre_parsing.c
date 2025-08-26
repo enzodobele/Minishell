@@ -14,7 +14,7 @@ char	*join_and_free(char *input, char *next_line)
 
 int	validate_input_syntax(char *input)
 {
-	if (has_leading_pipe(input) || is_redirection_syntax_valid(input))
+	if (has_leading_pipe(input) || is_redirection_syntax_valid(input, -1))
 	{
 		add_history(input);
 		return (0);
@@ -53,7 +53,7 @@ int	has_trailing_pipe(char *input)
 	if (i == 0)
 		return (0);
 	i--;
-	while (i >= 0 && (input[i] == ' ' || input[i] == '\t'))
+	while (i >= 0 && (input[i] == ' ' || input[i] == '\t' || input[i] == '\n'))
 		i--;
 	if (i >= 0 && input[i] == '|')
 		return (1);

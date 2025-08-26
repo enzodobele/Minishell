@@ -33,3 +33,20 @@ int	process_tokens(char *input, t_token **token)
 	}
 	return (1);
 }
+
+char	*get_token_symbol(t_token_type type)
+{
+	if (type == PIPE)
+		return ("|");
+	else if (type == REDIR_OUT)
+		return (">");
+	else if (type == REDIR_IN)
+		return ("<");
+	else if (type == REDIR_APPEND)
+		return (">>");
+	else if (type == HEREDOC)
+		return ("<<");
+	else if (type == LOGICAL_OR)
+		return ("||");
+	return ("unknown");
+}

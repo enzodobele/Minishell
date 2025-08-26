@@ -143,4 +143,39 @@ int	is_dollard(t_token **token, char *input, int i)
 		return (i - start);
 	}
 	return (0);
-}*/
+}
+int	is_dollard(t_token **token, char *input, int i)
+{
+	t_token_data	data;
+	int				len;
+
+	data.start = i;
+	data.quote = NO_QUOTE;
+	data.type = WORD;
+	if (input[i + 1] == '?')
+	{
+		data.len = 2;
+		if (!create_token(data, input, token))
+			return (0);
+		return (2);
+	}
+	if (input[i + 1] && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
+	{
+		len = 1;
+		i++;
+		while (input[i] && (ft_isalnum(input[i]) || input[i] == '_'))
+		{
+			len++;
+			i++;
+		}
+		data.len = len;
+		if (!create_token(data, input, token))
+			return (0);
+		return (len);
+	}
+	data.len = 1;
+	if (!create_token(data, input, token))
+		return (0);
+	return (1);
+}	
+*/
