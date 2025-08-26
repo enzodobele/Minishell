@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 16:54:38 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/26 13:17:04 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 17:22:47 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,22 @@
 
 static int	_print_export(t_env *env)
 {
-	t_env_node	*current;
+	// t_env_node	*current;
 
 	if (!env)
 		return (0);
-	current = env->env_list;
-	while (current)
-	{
-		if (current->value)
-			printf("declare -x %s=\"%s\"\n", current->key, current->value);
-		else
-			printf("declare -x %s\n", current->key);
-		current = current->next;
-	}
+	// current = env->env_list;
+	// while (current)
+	// {
+	// 	if (current->value)
+	// 		printf("declare -x %s=\"%s\"\n", current->key, current->value);
+	// 	else
+	// 		printf("declare -x %s\n", current->key);
+	// 	current = current->next;
+	// }
+	printf("Export MINISHELL : to the trash !!!\n");
+	printf("Thanks to the man !\n");
+	printf("Undefined behavior means i can do anything i want\n");
 	return (0);
 }
 
