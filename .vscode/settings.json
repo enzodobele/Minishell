@@ -5,7 +5,8 @@
 		"minishell.h": "c",
 		"m_minishell.h": "c",
 		"*.h": "c",
-		"*.c": "c"
+		"*.c": "c",
+		"functional": "c"
 	},
 	"C_Cpp.errorSquiggles": "enabled",
 	"C_Cpp.intelliSenseEngine": "default",

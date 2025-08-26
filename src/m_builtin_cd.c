@@ -19,9 +19,10 @@ static void	update_oldpwd(t_env *env, char *old_pwd);
 
 int	handle_cd(t_env *env, t_command *command)
 {
-	char	*path;
-	char	pwd[PATH_MAX];
-	int		result;
+	char		*path;
+	char		pwd[PATH_MAX];
+	int			result;
+	struct stat	st;
 
 	if (getcwd(pwd, sizeof(pwd)) == NULL)
 		return (-1);
@@ -37,15 +38,14 @@ int	handle_cd(t_env *env, t_command *command)
 			result = cd_to_oldpwd(env);
 		else if (path[0] == '~' && path[1] == '/')
 			result = cd_expand_tilde(env, path);
+		else if (access(path, F_OK) != 0)
+			return (handle_cd_error(command, 1), 1);
+		else if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
+			return (handle_cd_error(command, 2), 1);
+		else if (access(path, X_OK) != 0)
+			return (handle_cd_error(command, 3), 1);
 		else
-		{
-			if (access(path, F_OK) != 0)
-			{
-				printf("Minishell: cd: %s: No such file or directory\n", path);
-				return (-1);
-			}
 			result = chdir(path);
-		}
 	}
 	if (result == 0)
 		update_oldpwd(env, pwd);

@@ -26,6 +26,7 @@
 # include <stddef.h>
 # include <errno.h>
 # include <stddef.h>
+# include <sys/stat.h>
 
 typedef struct s_pipe_data
 {
@@ -263,7 +264,7 @@ void		handle_system_error(const char *error_msg);
 
 int			fork_and_exec(t_env *env, t_command *command,
 				t_pipe_data *pipe_data);
-int			wait_for_children(void);
+int			wait_for_children(t_env *env);
 
 void		debug_print_token(t_token *token);
 void		debug_print_all_tokens(t_token *token);
@@ -280,7 +281,7 @@ int			ft_strncmp(const char *s1, const char *s2, size_t n);
 void		ft_putstr_fd(char *s, int fd);
 char		*ft_itoa(int n);
 
-
+void		handle_cd_error(t_command *command, int result);
 // Cleanup functions
 void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env *env);
 void		cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env *env);

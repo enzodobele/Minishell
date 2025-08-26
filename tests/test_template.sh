@@ -1,3 +1,6 @@
+touch test_norights.out
+chmod 000 test_norights.out
+
 echo "Test 1 : echo"
 echo "Hello World" > "test1.out"
 echo $? >> "test1.out"
@@ -84,6 +87,7 @@ echo $? >> "test1.20.out"
 
 echo "Test 1.21 : export TESTVAR=abc ; echo \$TESTVAR"
 export TESTVAR=abc
+echo $? >> "test1.21.out"
 echo $TESTVAR > "test1.21.out"
 echo $? >> "test1.21.out"
 
@@ -114,5 +118,72 @@ echo $? >> "test1.27.out"
 echo "Test 1.28 : echo \"\$USER!\""
 echo "$USER"$USER'$USER' > "test1.28.out"
 echo $? >> "test1.28.out"
+
+echo "Test 2.1 : cd /tmp ; pwd"
+cd /tmp
+echo $? >> "$DIR/test2.1.out"
+pwd > "$DIR/test2.1.out"
+echo $? >> "$DIR/test2.1.out"
+cd "$DIR"
+
+echo "Test 2.2 : cd .. ; pwd"
+cd ..
+echo $? >> "$DIR/test2.2.out"
+pwd > "$DIR/test2.2.out"
+echo $? >> "$DIR/test2.2.out"
+cd "$DIR"
+
+echo "Test 2.3 : cd . ; pwd"
+cd .
+echo $? >> "$DIR/test2.3.out"
+cd "$DIR"
+
+echo "Test 2.4 : cd - ; pwd"
+cd -
+echo $? >> "$DIR/test2.4.out"
+cd "$DIR"
+
+echo "Test 2.5 : cd \$HOME ; pwd"
+cd $HOME
+echo $? >> "$DIR/test2.5.out"
+pwd > "$DIR/test2.5.out"
+echo $? >> "$DIR/test2.5.out"
+cd "$DIR"
+
+echo "Test 2.6 : cd /chemin/invalide ; pwd"
+cd /chemin/invalide
+echo $? >> "$DIR/test2.6.out"
+cd "$DIR"
+
+echo "Test 2.7 : cd /tmp ; ln -s / /tmp/rootlink ; cd /tmp/rootlink ; pwd"
+cd /tmp
+echo $? >> "$DIR/test2.7.out"
+ln -s / /tmp/rootlink
+echo $? >> "$DIR/test2.7.out"
+cd /tmp/rootlink
+echo $? >> "$DIR/test2.7.out"
+pwd > "$DIR/test2.7.out"
+echo $? >> "$DIR/test2.7.out"
+cd "$DIR"
+
+echo "Test 2.8 : cd /tmp ; mkdir -p a/b ; cd a/b ; pwd"
+cd /tmp
+echo $? >> "$DIR/test2.8.out"
+mkdir -p a/b
+echo $? >> "$DIR/test2.8.out"
+cd a/b
+echo $? >> "$DIR/test2.8.out"
+pwd > "$DIR/test2.8.out"
+echo $? >> "$DIR/test2.8.out"
+cd "$DIR"
+
+
+echo "Test 3 : env"
+env > "test3.out"
+echo $? >> "test3.out"
+
+echo "Test 4 : export"
+export > "test4.out"
+echo $? >> "test4.out"
 
 exit

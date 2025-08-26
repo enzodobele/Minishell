@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/25 16:08:52 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:06:40 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,17 +107,17 @@ int	pipexecution(t_env *env, t_command *cmd)
 		if (setup_redirections(cmd->redirects, pipe_data) < 0)
 		{
 			free(pipe_data);
-			return (env->last_exit_status = wait_for_children(), -1);
+			return (env->last_exit_status = wait_for_children(env), -1);
 		}
 		_pipexecution_clean_fds(pipe_data);
 		pipe_data->in_fd = fork_and_exec(env, cmd, pipe_data);
 		if (pipe_data->in_fd < 0 || pipe_data->outfile_error)
 		{
 			free(pipe_data);
-			return (env->last_exit_status = wait_for_children(), -1);
+			return (env->last_exit_status = wait_for_children(env), -1);
 		}
 		cmd = cmd->next;
 	}
 	free(pipe_data);
-	return (env->last_exit_status = wait_for_children());
+	return (env->last_exit_status);
 }

@@ -45,3 +45,7 @@ ok export with no options
 ok unset with no options
 ok env with no options or arguments
 exit with no options
+
+dans fork and exec
+	if (pid == 0)
+		env->last_exit_status = exec_child(env, command, pipe_data);

@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/25 21:01:10 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/26 15:55:12 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@ int	exec_builtins(t_command *command, t_env *env)
 	if (!command || !command->cmd)
 		return (0);
 	if (ft_strcmp(command->cmd->string, "cd") == 0)
-		return (handle_cd(env, command), 1);
+		return (handle_cd(env, command));
 	if (ft_strcmp(command->cmd->string, "pwd") == 0)
-		return (handle_pwd(), 1);
+		return (handle_pwd());
 	if (ft_strcmp(command->cmd->string, "echo") == 0
 		&& command->args && command->args[0]
 		&& ft_strcmp(command->args[0]->string, "-n") == 0)
-		return (handle_echo_n(command), 1);
+		return (handle_echo_n(command));
 	if (ft_strcmp(command->cmd->string, "export") == 0)
-		return (handle_export(env, command), 1);
+		return (handle_export(env, command));
 	if (ft_strcmp(command->cmd->string, "unset") == 0)
-		return (handle_unset(env, command), 1);
+		return (handle_unset(env, command));
 	if (ft_strcmp(command->cmd->string, "env") == 0)
-		return (handle_env(env), 1);
+		return (handle_env(env));
 	if (ft_strcmp(command->cmd->string, "exit") == 0)
 		return (handle_exit(command, env));
-	return (0);
+	return (-1);
 }
 
 char	**build_argv(t_command *command)
@@ -53,7 +53,7 @@ char	**build_argv(t_command *command)
 	i = 0;
 	while (i < arg_count)
 	{
-		printf("Arg %d: |%s|\n", i, command->args[i]->string);
+		// printf("Arg %d: |%s|\n", i, command->args[i]->string);
 		argv[i + 1] = command->args[i]->string;
 		i++;
 	}
@@ -61,7 +61,7 @@ char	**build_argv(t_command *command)
 	i = 0;
 	while (i < arg_count + 1)
 	{
-		printf("arg %d: |%s|\n", i, argv[i]);
+		// printf("arg %d: |%s|\n", i, argv[i]);
 		i++;
 	}
 	return (argv);
@@ -73,24 +73,22 @@ int	exec_command(t_command *command, t_env *env)
 	char	**argv;
 
 	if (!command || !env)
-		return (-1);
+		return (1);
 	builtin_result = exec_builtins(command, env);
-	if (builtin_result == 42)
-		return (42);
-	else if (builtin_result)
-		return (0);
+	if (builtin_result >= 0)
+		return (builtin_result);
 	else
 	{
 		if (check_command(env, command) < 0)
-			return (handle_command_error(command, -1), -1);
+			return (handle_command_error(command, 1), 1);
 		argv = build_argv(command);
 		if (!argv)
 			exit(127);
 		execve(command->cmd->string, argv, env->envp);
 		free(argv);
 		perror("execve");
+		return (127);
 	}
-	return (0);
 }
 
 static void	_clean_child_fds(t_pipe_data *pipe_data)
@@ -126,5 +124,7 @@ int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 		exit(127);
 	_clean_child_fds(pipe_data);
 	expand_last_exit_status(env, command);
-	exit(exec_command(command, env));
+	int res = exec_command(command, env);
+	printf("[DEBUG][exec_child] exec_command returned %d\n", res);
+	exit(res);
 }

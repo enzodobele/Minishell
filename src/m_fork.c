@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_fork.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 13:12:16 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/22 15:14:38 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/26 16:08:12 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,26 +26,44 @@ static void	_clean_parent(t_env *env, t_pipe_data *pipe_data, int pid)
 int	fork_and_exec(t_env *env, t_command *command, t_pipe_data *pipe_data)
 {
 	int	pid;
+	int	saved_stdout;
+	int	ret;
 
 	pipe_data->is_piped = (command->next != NULL);
 	if ((ft_strcmp(command->cmd->string, "exit") == 0 && !pipe_data->is_piped)
 		|| ft_strcmp(command->cmd->string, "cd") == 0
-		|| ft_strcmp(command->cmd->string, "export") == 0
+		|| (ft_strcmp(command->cmd->string, "export") == 0)
 		|| ft_strcmp(command->cmd->string, "unset") == 0)
-		return (exec_builtins(command, env));
+	{
+		saved_stdout = -1;
+		if (pipe_data->out_fd != -1 && pipe_data->out_fd != STDOUT_FILENO)
+		{
+			saved_stdout = dup(STDOUT_FILENO);
+			dup2(pipe_data->out_fd, STDOUT_FILENO);
+			close(pipe_data->out_fd);
+		}
+		ret = exec_builtins(command, env);
+		if (saved_stdout != -1)
+		{
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdout);
+		}
+		env->last_exit_status = ret;
+		return (ret);
+	}
 	if (pipe_data->is_piped && pipe(pipe_data->pipe_fd) < 0)
 		return (handle_system_error("Pipe creation failed"), -1);
 	pid = fork();
 	if (pid < 0)
 		return (handle_system_error("Fork failed"), -1);
 	if (pid == 0)
-		exec_child(env, command, pipe_data);
+		env->last_exit_status = exec_child(env, command, pipe_data);
 	else
 		return (_clean_parent(env, pipe_data, pid), pipe_data->pipe_fd[0]);
 	return (-1);
 }
 
-int	wait_for_children(void)
+int	wait_for_children(t_env *env)
 {
 	int		status;
 	int		last_exit_status;
@@ -56,6 +74,7 @@ int	wait_for_children(void)
 	waited_pid = 1;
 	while (waited_pid > 0)
 	{
+		printf("[DEBUG][wait_for_children] %d\n", env->last_exit_status);
 		waited_pid = wait(&status);
 		if (waited_pid < 0)
 			break ;
@@ -68,5 +87,7 @@ int	wait_for_children(void)
 				last_exit_status = 128 + sig;
 		}
 	}
+	env->last_exit_status = last_exit_status;
+	printf("[DEBUG][wait_for_children] after loop %d\n", env->last_exit_status);
 	return (last_exit_status);
 }
