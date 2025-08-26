@@ -1,8 +1,8 @@
 ./tests/bash/test1.28.out
 ./tests/minishell/test1.28.out
 
---- ./tests/bash/test1.28.out	2025-08-26 18:39:36.345396566 +0200
-+++ ./tests/minishell/test1.28.out	2025-08-26 18:39:36.441398589 +0200
+--- ./tests/bash/test1.28.out	2025-08-26 18:56:04.586838041 +0200
++++ ./tests/minishell/test1.28.out	2025-08-26 18:56:04.738841337 +0200
 @@ -1,2 +1,2 @@
 -mzimerismzimeris$USER
 +mzimeris mzimeris $USER
