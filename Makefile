@@ -7,121 +7,112 @@ SRC_DIR = src
 BUILTINS_DIR = $(SRC_DIR)/builtins
 UTILS_DIR = $(SRC_DIR)/utils
 EXEC_DIR = $(SRC_DIR)/exec
+PARSING_DIR = $(SRC_DIR)/parsing
+TOKEN_DIR = $(SRC_DIR)/tokenizer
+LIBFT_DIR = $(SRC_DIR)/usefull
 
-LIBFT_DIR = usefull
 OBJ_DIR = obj
 INCLUDES_DIR = includes
 
 LIBS = -lreadline
 
 LIBFT = \
-	ft_lstadd_back.c \
-	ft_strdup.c \
-	ft_itoa.c \
-	ft_strlen.c \
-	ft_lstclear.c \
 	ft_isalnum.c \
 	ft_isalpha.c \
-	ft_strncpy.c \
 	ft_isdigit.c \
-	ft_strjoin.c \
-	is_char_token.c \
-	ft_strcmp.c \
-	ft_split.c \
-	ft_strcpy.c \
-	ft_strlcpy.c \
-	ft_strlcat.c \
-	ft_strchr.c \
-	ft_strncmp.c \
+	ft_itoa.c \
+	ft_lstadd_back.c \
+	ft_lstclear.c \
 	ft_putstr_fd.c \
+	ft_split.c \
+	ft_strchr.c \
+	ft_strcmp.c \
+	ft_strcpy.c \
 	ft_strdup_2.c \
+	ft_strdup.c \
+	ft_strjoin.c \
+	ft_strlcat.c \
+	ft_strlcpy.c \
+	ft_strlen.c \
+	ft_strncmp.c \
+	ft_strncpy.c \
 	ft_substr.c \
-	print_syntaxe_error.c \
-	hangle_exit_var.c \
 
 SRC_BUILTINS = \
-	m_builtin_cd_utils.c \
-	m_builtin_cd.c \
-	m_builtin_env.c \
-	m_builtin_export_utils.c \
-	m_builtin_export.c \
-	m_builtin.c \
-	m_echo.c \
+	builtin_cd_utils.c \
+	builtin_cd.c \
+	builtin_env.c \
+	builtin_export_utils.c \
+	builtin_export.c \
+	builtin.c \
+	echo.c \
 
 SRC_UTILS = \
-	m_clean.c \
-	m_debug.c \
-	m_env_utils.c \
-	m_env.c \
-	m_expand.c \
-	m_error_handler.c \
+	add_history.c \
+	clean.c \
+	debug.c \
+	env_utils.c \
+	env.c \
+	error_handler.c \
+	expand.c \
+	free_command.c \
+	ft_lst_add_back_command.c \
+	handle_exit_var.c \
+	is_char_token.c \
+	print_syntaxe_error.c \
 
 SRC_EXEC = \
-	m_command_validation.c \
-	m_exec.c \
-	m_fork.c \
-	m_heredoc.c \
-	m_pipeline.c \
-	m_redirect.c \
+	command_validation.c \
+	exec.c \
+	fork.c \
+	heredoc.c \
+	pipeline.c \
+	redirect.c \
 
+SRC_PARSING = \
+	expand_var_utils.c \
+	expand_var.c \
+	process_pre_parsing_bis.c \
+	process_pre_parsing.c \
+	process_var.c \
+	test_parsing.c \
+
+SRC_TOKENIZER = \
+	create_command.c \
+	handler_token_2.c \
+	handler_token.c \
+	token_check_syntaxe.c \
+	tokenizer.c \
+	type_token.c \
 
 SRC = \
 	main.c \
-	tokenizer.c \
-	type_token.c \
-	token_check_syntaxe.c \
-	test_parsing.c \
-	create_command.c \
-	free_command.c \
-	ft_lst_add_back_command.c \
-	handler_token.c \
-	handler_token_2.c \
-	process_pre_parsing.c \
-	process_pre_parsing_bis.c \
-	expand_var.c \
-	process_var.c \
-	expand_var_utils.c \
-	add_history.c \
-
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \
 	$(addprefix $(BUILTINS_DIR)/, $(SRC_BUILTINS)) \
 	$(addprefix $(UTILS_DIR)/, $(SRC_UTILS)) \
 	$(addprefix $(EXEC_DIR)/, $(SRC_EXEC)) \
+	$(addprefix $(PARSING_DIR)/, $(SRC_PARSING)) \
+	$(addprefix $(TOKEN_DIR)/, $(SRC_TOKENIZER)) \
 	$(addprefix $(LIBFT_DIR)/, $(LIBFT)) \
 
-OBJ_ALL = \
-	$(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRC_ALL)))
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o, $(SRC_ALL))
 
 GREEN = \033[0;32m
 YELLOW = \033[0;33m
 RED = \033[0;31m
 RESET = \033[0m
 
-all: $(OBJ_DIR) $(NAME)
+all: $(NAME)
 
-$(NAME): $(OBJ_ALL)
+$(NAME): $(OBJS)
 	@echo "$(YELLOW)🔧 Compilation de $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJ_ALL) -o $(NAME) $(LIBS)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 	@echo "$(GREEN)✅ Compilé avec succès !$(RESET)"
 
-$(OBJ_DIR):
-	@mkdir -p $(OBJ_DIR)
-
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
-
-$(OBJ_DIR)/%.o: $(BUILTINS_DIR)/%.c
-	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
-
-$(OBJ_DIR)/%.o: $(UTILS_DIR)/%.c
-	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
-
-$(OBJ_DIR)/%.o: $(EXEC_DIR)/%.c
-	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
-
-$(OBJ_DIR)/%.o: $(LIBFT_DIR)/%.c
+	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
 
 clean:
