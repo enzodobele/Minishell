@@ -234,6 +234,8 @@ char		*ft_strncpy(char *dst, const char *src, size_t len);
 //=========================== Exec ============================
 
 int			heredoc_handler(t_env *env, char *delimiter);
+void		clean_echo_args(t_command *command);
+
 
 t_env		*extract_env(char **envp);
 void		clear_env(t_env **env);

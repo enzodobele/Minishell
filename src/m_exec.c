@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 14:43:19 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:51:52 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int	exec_command(t_command *command, t_env *env)
 
 	if (!command || !env)
 		return (1);
+	if (ft_strcmp(command->cmd->string, "echo") == 0)
+		clean_echo_args(command);
 	builtin_result = exec_builtins(command, env);
 	if (builtin_result >= 0)
 		return (builtin_result);

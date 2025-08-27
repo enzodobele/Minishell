@@ -6,13 +6,13 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 15:07:19 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 16:45:34 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:50:43 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	count_echo_args(t_command *command)
+static int	count_echo_args(t_command *command)
 {
 	int	i;
 	int	count;
@@ -33,7 +33,7 @@ int	count_echo_args(t_command *command)
 	return (count);
 }
 
-t_token	*join_two_tokens(t_token *first, t_token *second)
+static t_token	*join_two_tokens(t_token *first, t_token *second)
 {
 	char	*new_string;
 	t_token	*new_token;
@@ -61,7 +61,7 @@ t_token	*join_two_tokens(t_token *first, t_token *second)
 	return (new_token);
 }
 
-t_token	*duplicate_token(t_token *token)
+static t_token	*duplicate_token(t_token *token)
 {
 	t_token	*new_token;
 
@@ -81,7 +81,7 @@ t_token	*duplicate_token(t_token *token)
 	return (new_token);
 }
 
-t_token	**create_new_args_array(t_command *command, t_token **new_args)
+static t_token	**create_new_args_array(t_command *command, t_token **new_args)
 {
 	int		i;
 	int		j;

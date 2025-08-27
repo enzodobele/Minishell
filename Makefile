@@ -57,6 +57,7 @@ SRC = \
 	m_env.c \
 	m_expand.c \
 	m_error_handler.c \
+	m_echo.c \
 	m_exec.c \
 	m_fork.c \
 	m_heredoc.c \
