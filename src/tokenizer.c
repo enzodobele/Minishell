@@ -45,6 +45,7 @@ int	is_pipe(t_token **token, char *input, int i)
 	}
 	data.len = 1;
 	data.type = PIPE;
+	data.have_space = 1;
 	if (!create_token(data, input, token))
 		return (0);
 	return (1);
@@ -103,6 +104,7 @@ int	add_new_token_word(int start, int i, t_token **token, char *input)
 		new_token->quote_type = SINGLE_QUOTE;
 	else
 		new_token->quote_type = NO_QUOTE;
+	data.have_space = 1;
 	new_token->next = NULL;
 	new_token->prev = NULL;
 	ft_lstadd_back(token, new_token);
