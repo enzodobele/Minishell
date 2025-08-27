@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:15:00 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 18:31:48 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 14:52:14 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,21 @@
 
 static void	print_command_not_found_error(const char *command)
 {
+	ft_putstr_fd("Minishell: ", 2);
 	ft_putstr_fd((char *)command, 2);
 	ft_putstr_fd(": command not found\n", 2);
 }
 
 static void	print_no_such_file_error(const char *command)
 {
+	ft_putstr_fd("Minishell: ", 2);
 	ft_putstr_fd((char *)command, 2);
 	ft_putstr_fd(": No such file or directory\n", 2);
 }
 
 static void	print_permission_denied_error(const char *command)
 {
-	ft_putstr_fd("pipex: ", 2);
+	ft_putstr_fd("Minishell: ", 2);
 	ft_putstr_fd((char *)command, 2);
 	ft_putstr_fd(": Permission denied\n", 2);
 }
@@ -50,7 +52,7 @@ void	handle_cd_error(t_command *command, int result)
 		ft_putstr_fd("Minihell: cd: Not a directory: ", 2);
 	else if (result == 3)
 		ft_putstr_fd("Minishell: cd: Permission denied: ", 2);
-	ft_putstr_fd(command->cmd->string, 2);
+	ft_putstr_fd(command->args[0]->string, 2);
 	ft_putstr_fd("\n", 2);
 }
 

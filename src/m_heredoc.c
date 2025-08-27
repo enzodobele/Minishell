@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 19:21:34 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 21:39:46 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 14:24:23 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ static void	_expand_heredoc(t_env *env, char *str, int *pipe_fd)
 			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 				i++;
 			key = ft_substr(str, start, i - start);
+			if (!key)
+				return (handle_system_error("Memory allocation failed"), (void)0);
 			node = get_env(env, key);
 			if (node && node->value)
 				write(pipe_fd[1], node->value, ft_strlen(node->value));
@@ -109,9 +111,17 @@ int	heredoc_handler(t_env *env, char *delimiter)
 		return (handle_system_error("Pipe creation failed"), -1);
 	is_quoted = _is_delimiter_quoted(delimiter);
 	if (is_quoted)
+	{
 		clean_delim = ft_substr(delimiter, 1, ft_strlen(delimiter) - 2);
+		if (!clean_delim)
+			return (handle_system_error("Memory allocation failed"), -1);
+	}
 	else
+	{
 		clean_delim = ft_strdup2(delimiter);
+		if (!clean_delim)
+			return (handle_system_error("Memory allocation failed"), -1);
+	}
 	heredoc_fd = _heredoc_loop(env, pipe_fd, clean_delim, is_quoted);
 	free(clean_delim);
 	return (heredoc_fd);

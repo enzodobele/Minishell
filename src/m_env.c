@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoum <zoum@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:30:09 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/22 16:49:03 by zoum             ###   ########.fr       */
+/*   Updated: 2025/08/27 14:26:14 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,14 @@ t_env	*extract_env(char **envp)
 		if (!line)
 			return (NULL);
 		node = _extract_env_node(new_env, line);
+		if (!node && ft_strchr(line, '='))
+			return (free(line), NULL);
 		if (node && ft_strcmp(node->key, "PATH") == 0 && node->value)
+		{
 			new_env->path = ft_split(node->value, ':');
+			if (!new_env->path)
+				return (handle_system_error("Memory allocation failed"), NULL);
+		}
 		free(line);
 		envp++;
 	}

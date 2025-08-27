@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 13:48:16 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 14:36:09 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,9 +127,9 @@ int	pipexecution(t_env *env, t_command *cmd)
 		pipe_data->in_fd = fork_and_exec(env, cmd, pipe_data);
 		if (pipe_data->in_fd < 0 || pipe_data->outfile_error)
 		{
+			free(pipe_data);
 			signal(SIGINT, handle_sigint);
 			signal(SIGQUIT, SIG_IGN);
-			free(pipe_data);
 			return (env->last_exit_status = wait_for_children(), -1);
 		}
 		cmd = cmd->next;
