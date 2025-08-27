@@ -3,3 +3,4 @@ obj/
 tests/bash/
 tests/*.out
 tests/minishell/
+minishell
