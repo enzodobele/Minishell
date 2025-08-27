@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 21:35:29 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:38:47 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ int	exec_child(t_env *env, t_command *command, t_pipe_data *pipe_data)
 	if (!command || !command->cmd || !command->cmd->string)
 		exit(127);
 	_clean_child_fds(pipe_data);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	expand_last_exit_status(env, command);
 	exit(exec_command(command, env));
 }

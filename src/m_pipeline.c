@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 21:40:40 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:48:16 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,9 @@ int	pipexecution(t_env *env, t_command *cmd)
 {
 	t_pipe_data	*pipe_data;
 
+
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	pipe_data = malloc(sizeof(t_pipe_data));
 	if (!pipe_data)
 		return (-1);
@@ -116,12 +119,16 @@ int	pipexecution(t_env *env, t_command *cmd)
 		if (setup_redirections(env, cmd->redirects, pipe_data) < 0)
 		{
 			free(pipe_data);
+			signal(SIGINT, handle_sigint);
+			signal(SIGQUIT, SIG_IGN);
 			return (env->last_exit_status = wait_for_children(), -1);
 		}
 		_pipexecution_clean_fds(pipe_data);
 		pipe_data->in_fd = fork_and_exec(env, cmd, pipe_data);
 		if (pipe_data->in_fd < 0 || pipe_data->outfile_error)
 		{
+			signal(SIGINT, handle_sigint);
+			signal(SIGQUIT, SIG_IGN);
 			free(pipe_data);
 			return (env->last_exit_status = wait_for_children(), -1);
 		}
@@ -129,5 +136,7 @@ int	pipexecution(t_env *env, t_command *cmd)
 	}
 	free(pipe_data);
 	wait_for_children();
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	return (env->last_exit_status);
 }
