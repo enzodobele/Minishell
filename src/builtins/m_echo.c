@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 15:07:19 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 16:50:43 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:55:42 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,6 @@ void	clean_echo_args(t_command *command)
 {
 	int		count;
 	t_token	**new_args;
-
 
 	if (!command || !command->args)
 		return ;

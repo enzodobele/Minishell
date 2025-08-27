@@ -4,6 +4,10 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = src
+BUILTINS_DIR = $(SRC_DIR)/builtins
+UTILS_DIR = $(SRC_DIR)/utils
+EXEC_DIR = $(SRC_DIR)/exec
+
 LIBFT_DIR = usefull
 OBJ_DIR = obj
 INCLUDES_DIR = includes
@@ -35,6 +39,32 @@ LIBFT = \
 	print_syntaxe_error.c \
 	hangle_exit_var.c \
 
+SRC_BUILTINS = \
+	m_builtin_cd_utils.c \
+	m_builtin_cd.c \
+	m_builtin_env.c \
+	m_builtin_export_utils.c \
+	m_builtin_export.c \
+	m_builtin.c \
+	m_echo.c \
+
+SRC_UTILS = \
+	m_clean.c \
+	m_debug.c \
+	m_env_utils.c \
+	m_env.c \
+	m_expand.c \
+	m_error_handler.c \
+
+SRC_EXEC = \
+	m_command_validation.c \
+	m_exec.c \
+	m_fork.c \
+	m_heredoc.c \
+	m_pipeline.c \
+	m_redirect.c \
+
+
 SRC = \
 	main.c \
 	tokenizer.c \
@@ -46,23 +76,6 @@ SRC = \
 	ft_lst_add_back_command.c \
 	handler_token.c \
 	handler_token_2.c \
-	m_builtin_cd.c \
-	m_builtin_env.c \
-	m_builtin_export.c \
-	m_builtin.c \
-	m_clean.c \
-	m_command_validation.c \
-	m_debug.c \
-	m_env_utils.c \
-	m_env.c \
-	m_expand.c \
-	m_error_handler.c \
-	m_echo.c \
-	m_exec.c \
-	m_fork.c \
-	m_heredoc.c \
-	m_pipeline.c \
-	m_redirect.c \
 	process_pre_parsing.c \
 	process_pre_parsing_bis.c \
 	expand_var.c \
@@ -73,9 +86,13 @@ SRC = \
 
 SRC_ALL = \
 	$(addprefix $(SRC_DIR)/, $(SRC)) \
+	$(addprefix $(BUILTINS_DIR)/, $(SRC_BUILTINS)) \
+	$(addprefix $(UTILS_DIR)/, $(SRC_UTILS)) \
+	$(addprefix $(EXEC_DIR)/, $(SRC_EXEC)) \
 	$(addprefix $(LIBFT_DIR)/, $(LIBFT)) \
 
-OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRC_ALL)))
+OBJ_ALL = \
+	$(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRC_ALL)))
 
 GREEN = \033[0;32m
 YELLOW = \033[0;33m
@@ -84,15 +101,24 @@ RESET = \033[0m
 
 all: $(OBJ_DIR) $(NAME)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJ_ALL)
 	@echo "$(YELLOW)🔧 Compilation de $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
+	@$(CC) $(CFLAGS) $(OBJ_ALL) -o $(NAME) $(LIBS)
 	@echo "$(GREEN)✅ Compilé avec succès !$(RESET)"
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(BUILTINS_DIR)/%.c
+	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(UTILS_DIR)/%.c
+	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(EXEC_DIR)/%.c
 	@$(CC) $(CFLAGS) -I $(INCLUDES_DIR) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(LIBFT_DIR)/%.c

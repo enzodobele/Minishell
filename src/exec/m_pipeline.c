@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 14:36:09 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 18:06:16 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ static int	setup_redirections(t_env *env, t_redirect *redirect,
 int	pipexecution(t_env *env, t_command *cmd)
 {
 	t_pipe_data	*pipe_data;
-
 
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);

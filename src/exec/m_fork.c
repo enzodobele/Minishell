@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 13:12:16 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 14:35:49 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 18:35:18 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,42 +23,58 @@ static void	_clean_parent(t_env *env, t_pipe_data *pipe_data, int pid)
 		perror("close pipe_fd[1] (parent)");
 }
 
+static int	_builtins_in_parent(t_command *command)
+{
+	if (!command || !command->cmd || !command->cmd->string)
+		return (0);
+	if (ft_strcmp(command->cmd->string, "exit") == 0
+		|| ft_strcmp(command->cmd->string, "cd") == 0
+		|| (ft_strcmp(command->cmd->string, "export") == 0
+			&& !command->next)
+		|| ft_strcmp(command->cmd->string, "unset") == 0)
+		return (1);
+	return (0);
+}
+
+static int	_pipe_control(t_env *env, t_command *command,
+				t_pipe_data *pipe_data)
+{
+	int	saved_stdout;
+	int	ret;
+
+	saved_stdout = -1;
+	if (pipe_data->out_fd != -1 && pipe_data->out_fd != STDOUT_FILENO)
+	{
+		saved_stdout = dup(STDOUT_FILENO);
+		dup2(pipe_data->out_fd, STDOUT_FILENO);
+		close(pipe_data->out_fd);
+	}
+	ret = exec_builtins(command, env);
+	if (saved_stdout != -1)
+	{
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdout);
+	}
+	return (ret);
+}
+
 int	fork_and_exec(t_env *env, t_command *command, t_pipe_data *pipe_data)
 {
 	int	pid;
-	int	saved_stdout;
-	int	ret;
 
 	if (!command || !command->cmd || !command->cmd->string)
 		return (-1);
 	pipe_data->is_piped = (command->next != NULL);
-	if ((ft_strcmp(command->cmd->string, "exit") == 0 && !pipe_data->is_piped)
-		|| ft_strcmp(command->cmd->string, "cd") == 0
-		|| (ft_strcmp(command->cmd->string, "export") == 0
-			&& !pipe_data->is_piped)
-		|| ft_strcmp(command->cmd->string, "unset") == 0)
+	if (_builtins_in_parent(command))
 	{
-		saved_stdout = -1;
-		if (pipe_data->out_fd != -1 && pipe_data->out_fd != STDOUT_FILENO)
-		{
-			saved_stdout = dup(STDOUT_FILENO);
-			dup2(pipe_data->out_fd, STDOUT_FILENO);
-			close(pipe_data->out_fd);
-		}
-		ret = exec_builtins(command, env);
-		if (saved_stdout != -1)
-		{
-			dup2(saved_stdout, STDOUT_FILENO);
-			close(saved_stdout);
-		}
-		env->last_exit_status = ret;
-		return (ret);
+		env->last_exit_status = _pipe_control(env, command, pipe_data);
+		return (env->last_exit_status);
 	}
 	if (pipe_data->is_piped && pipe(pipe_data->pipe_fd) < 0)
-		return (handle_system_error("Pipe creation failed"), -1);
+		return (handle_sys_error("Pipe creation failed"), -1);
 	pid = fork();
 	if (pid < 0)
-		return (handle_system_error("Fork failed"), -1);
+		return (handle_sys_error("Fork failed"), -1);
 	if (pid == 0)
 		env->last_exit_status = exec_child(env, command, pipe_data);
 	else

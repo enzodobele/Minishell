@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   m_builtin_export.c                                 :+:      :+:    :+:   */
+/*   m_builtin_export_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/20 16:54:38 by zoum              #+#    #+#             */
-/*   Updated: 2025/08/26 18:37:23 by mzimeris         ###   ########.fr       */
+/*   Created: 2025/08/27 17:54:44 by mzimeris          #+#    #+#             */
+/*   Updated: 2025/08/27 18:33:38 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	_print_export(t_env *env)
+int	print_export(t_env *env)
 {
 	t_env_node	*current;
 
@@ -32,7 +32,6 @@ static int	_print_export(t_env *env)
 	printf("| Thanks to the man !                               |\n");
 	printf("| Undefined behavior means i can do anything i want |\n");
 	printf("x===================================================x\n");
-
 	return (0);
 }
 
@@ -41,9 +40,17 @@ static void	_update_env_node(t_env_node *node, char *value)
 	if (node->value)
 		free(node->value);
 	if (value)
+	{
 		node->value = ft_strdup(value, ft_strlen(value), 0);
+		if (!node->value)
+			return ;
+	}
 	else
+	{
 		node->value = ft_strdup("", 0, 0);
+		if (!node->value)
+			return ;
+	}
 }
 
 static void	_create_env_node(t_env *env, char **kval)
@@ -78,36 +85,24 @@ static int	_check_key_validity(char *key)
 	return (0);
 }
 
-int	handle_export(t_env *env, t_command *command)
+int	check_export(t_env *env, char *string, char **kval)
 {
-	char		**kval;
-	int			i;
 	t_env_node	*node;
 	int			ret;
 
 	ret = 0;
-	if (!command->args || !command->args[0])
-		return (_print_export(env));
-	i = 0;
-	while (command->args[i])
+	if (_check_key_validity(kval[0]))
 	{
-		kval = ft_split(command->args[i]->string, '=');
-		if (_check_key_validity(kval[0]))
-		{
-			handle_export_error(command->args[i]->string);
-			ret = 1;
-		}
+		handle_export_error(string);
+		ret = 1;
+	}
+	else
+	{
+		node = get_env(env, kval[0]);
+		if (node)
+			_update_env_node(node, kval[1]);
 		else
-		{
-			node = get_env(env, kval[0]);
-			if (node)
-				_update_env_node(node, kval[1]);
-			else
-				_create_env_node(env, kval);
-		}
-		if (kval)
-			free_splitted(kval);
-		i++;
+			_create_env_node(env, kval);
 	}
 	return (ret);
 }

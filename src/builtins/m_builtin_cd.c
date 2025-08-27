@@ -12,46 +12,6 @@
 
 #include "minishell.h"
 
-static int	cd_to_home(t_env *env);
-static int	cd_to_oldpwd(t_env *env);
-static int	cd_expand_tilde(t_env *env, char *path);
-static void	update_oldpwd(t_env *env, char *old_pwd);
-
-int	handle_cd(t_env *env, t_command *command)
-{
-	char		*path;
-	char		pwd[PATH_MAX];
-	int			result;
-	struct stat	st;
-
-	if (getcwd(pwd, sizeof(pwd)) == NULL)
-		return (-1);
-	if (!command->args || !command->args[0] || !command->args[0]->string
-		|| command->args[0]->string[0] == '\0')
-		result = cd_to_home(env);
-	else
-	{
-		path = command->args[0]->string;
-		if (ft_strcmp(path, "~") == 0)
-			result = cd_to_home(env);
-		else if (ft_strcmp(path, "-") == 0)
-			result = cd_to_oldpwd(env);
-		else if (path[0] == '~' && path[1] == '/')
-			result = cd_expand_tilde(env, path);
-		else if (access(path, F_OK) != 0)
-			return (handle_cd_error(command, 1), 1);
-		else if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
-			return (handle_cd_error(command, 2), 1);
-		else if (access(path, X_OK) != 0)
-			handle_cd_error(command, 3);
-		else
-			result = chdir(path);
-	}
-	if (result == 0)
-		update_oldpwd(env, pwd);
-	return (result);
-}
-
 static int	cd_to_home(t_env *env)
 {
 	t_env_node	*home_node;
@@ -96,23 +56,50 @@ static int	cd_expand_tilde(t_env *env, char *path)
 	return (result);
 }
 
-static void	update_oldpwd(t_env *env, char *old_pwd)
+static int	_handle_cd(t_command *command, t_env *env, char *path)
 {
-	t_env_node	*oldpwd_node;
-	char		*new_value;
+	struct stat	st;
+	int			result;
 
-	if (!env || !old_pwd)
-		return ;
-	oldpwd_node = get_env(env, "OLDPWD");
-	if (oldpwd_node)
-	{
-		new_value = ft_strdup(old_pwd, ft_strlen(old_pwd), 0);
-		if (!new_value)
-			return ;
-		if (oldpwd_node->value)
-			free(oldpwd_node->value);
-		oldpwd_node->value = new_value;
-	}
+	if (!command->args || !command->args[0]
+		|| !command->args[0]->string)
+		return (-1);
+	path = command->args[0]->string;
+	if (ft_strcmp(path, "~") == 0)
+		result = cd_to_home(env);
+	else if (ft_strcmp(path, "-") == 0)
+		result = cd_to_oldpwd(env);
+	else if (path[0] == '~' && path[1] == '/')
+		result = cd_expand_tilde(env, path);
+	else if (access(path, F_OK) != 0)
+		return (handle_cd_error(command, 1), 1);
+	else if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
+		return (handle_cd_error(command, 2), 1);
+	else if (access(path, X_OK) != 0)
+		return (handle_cd_error(command, 3), 1);
 	else
-		create_env_node(env, "OLDPWD", old_pwd);
+		result = chdir(path);
+	return (result);
+}
+
+int	handle_cd(t_env *env, t_command *command)
+{
+	char		*path;
+	char		pwd[PATH_MAX];
+	int			result;
+
+	result = -1;
+	if (getcwd(pwd, sizeof(pwd)) == NULL)
+		return (-1);
+	if (!command->args || !command->args[0] || !command->args[0]->string
+		|| command->args[0]->string[0] == '\0')
+		result = cd_to_home(env);
+	else
+	{
+		path = command->args[0]->string;
+		result = _handle_cd(command, env, path);
+	}
+	if (result == 0)
+		update_oldpwd(env, pwd);
+	return (result);
 }

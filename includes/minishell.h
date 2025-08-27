@@ -246,6 +246,8 @@ t_env_node	*get_env(t_env *env, const char *key);
 
 int			handle_pwd(void);
 int			handle_cd(t_env *env, t_command *command);
+void		update_oldpwd(t_env *env, char *old_pwd);
+
 int			handle_unset(t_env *env, t_command *command);
 int			handle_env(t_env *env);
 int			handle_echo_n(t_command *command);
@@ -261,13 +263,13 @@ void		expand_last_exit_status(t_env *env, t_command *command);
 
 // Command validation
 int			check_command(t_env *env, t_command *cmd);
-
+int			check_export(t_env *env, char *string, char **kval);
 void		setup_input_redirect(int in_fd);
 int			setup_output_redirect(t_command *command, int pipe_fd[2],
 				char *outfile);
 
 void		handle_command_error(t_command *command, int check_result);
-void		handle_system_error(const char *error_msg);
+void		handle_sys_error(const char *error_msg);
 
 int			fork_and_exec(t_env *env, t_command *command,
 				t_pipe_data *pipe_data);
