@@ -65,6 +65,7 @@ SRC_EXEC = \
 	command_validation.c \
 	exec.c \
 	fork.c \
+	heredoc_child.c \
 	heredoc.c \
 	pipeline.c \
 	redirect.c \

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   m_env.c                                            :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:30:09 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 18:05:48 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 20:16:15 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,11 @@ t_env	*extract_env(char **envp)
 	{
 		line = ft_strdup(*envp, ft_strlen(*envp), 0);
 		if (!line)
+		{
+			free_splitted(new_env->path);
+			free(new_env);
 			return (NULL);
+		}
 		env_loop(new_env, line);
 		free(line);
 		envp++;

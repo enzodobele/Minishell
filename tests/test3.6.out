@@ -1,8 +1,8 @@
 ./tests/bash/test3.6.out
 ./tests/minishell/test3.6.out
 
---- ./tests/bash/test3.6.out	2025-08-26 18:56:04.602838388 +0200
-+++ ./tests/minishell/test3.6.out	2025-08-26 18:56:04.830843331 +0200
+--- ./tests/bash/test3.6.out	2025-08-27 20:52:43.046211643 +0200
++++ ./tests/minishell/test3.6.out	2025-08-27 20:52:43.554221101 +0200
 @@ -1,5 +1,4 @@
  0
  

@@ -73,6 +73,7 @@ int	create_token(t_token_data data, char *input, t_token **token)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return (perror("Malloc failed"), 0);
+	*new_token = (t_token){0};
 	new_token->string = ft_strdup(input, data.len, data.start);
 	if (!new_token->string)
 		return (perror("Malloc failed"), free(new_token), 0);
@@ -92,6 +93,7 @@ int	add_new_token_word(int start, int i, t_token **token, char *input)
 	new_token = malloc(sizeof (t_token));
 	if (!new_token)
 		return (perror("Malloc failed"), 0);
+	*new_token = (t_token){0};
 	new_token->string = ft_strdup(input, (i - start), start);
 	if (!new_token->string)
 		return (perror("Malloc failed"), free(new_token), 0);

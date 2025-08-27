@@ -235,7 +235,8 @@ char		*ft_strncpy(char *dst, const char *src, size_t len);
 
 int			heredoc_handler(t_env *env, char *delimiter);
 void		clean_echo_args(t_command *command);
-
+int			heredoc_child(t_env *env, int pipe_fd[2], char *clean_delim,
+				int is_quoted);
 
 t_env		*extract_env(char **envp);
 void		clear_env(t_env **env);
