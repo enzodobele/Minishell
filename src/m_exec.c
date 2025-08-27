@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:13:37 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 13:38:47 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 14:43:19 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	exec_command(t_command *command, t_env *env)
 {
 	int		builtin_result;
 	char	**argv;
+	int		ret;
 
 	if (!command || !env)
 		return (1);
@@ -75,8 +76,9 @@ int	exec_command(t_command *command, t_env *env)
 		return (builtin_result);
 	else
 	{
-		if (check_command(env, command) < 0)
-			return (handle_command_error(command, 1), 1);
+		ret = check_command(env, command);
+		if (ret < 0)
+			return (handle_command_error(command, ret), 1);
 		argv = build_argv(command);
 		if (!argv)
 			exit(127);
