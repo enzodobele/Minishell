@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   m_echo.c                                           :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 15:07:19 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 17:55:42 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 21:06:26 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,26 +81,26 @@ static t_token	*duplicate_token(t_token *token)
 	return (new_token);
 }
 
-static t_token	**create_new_args_array(t_command *command, t_token **new_args)
+static t_token	**create_new_args_array(t_token **args, t_token **new_args)
 {
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	while (command->args[i])
+	while (args[i])
 	{
-		if (command->args[i]->have_space == 0 && command->args[i + 1])
+		if (args[i]->have_space == 0 && args[i + 1]
+			&& args[i]->quote_type != NO_QUOTE)
 		{
-			new_args[j] = join_two_tokens(command->args[i],
-					command->args[i + 1]);
+			new_args[j] = join_two_tokens(args[i], args[i + 1]);
 			if (!new_args[j])
 				return (free(new_args), NULL);
 			i += 2;
 		}
 		else
 		{
-			new_args[j] = duplicate_token(command->args[i]);
+			new_args[j] = duplicate_token(args[i]);
 			if (!new_args[j])
 				return (free(new_args), NULL);
 			i++;
@@ -124,7 +124,7 @@ void	clean_echo_args(t_command *command)
 	if (!new_args)
 		return ;
 	new_args[count] = NULL;
-	new_args = create_new_args_array(command, new_args);
+	new_args = create_new_args_array(command->args, new_args);
 	if (!new_args)
 		return ;
 	free(command->args);
