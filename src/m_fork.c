@@ -6,7 +6,7 @@
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 13:12:16 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/26 17:23:54 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:31:43 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int	fork_and_exec(t_env *env, t_command *command, t_pipe_data *pipe_data)
 	int	saved_stdout;
 	int	ret;
 
+	if (!command || !command->cmd || !command->cmd->string)
+		return (-1);
 	pipe_data->is_piped = (command->next != NULL);
 	if ((ft_strcmp(command->cmd->string, "exit") == 0 && !pipe_data->is_piped)
 		|| ft_strcmp(command->cmd->string, "cd") == 0
