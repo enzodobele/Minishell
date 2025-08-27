@@ -89,6 +89,7 @@ typedef struct s_token_data
 	t_quote_type	quote;
 	int				start;
 	int				len;
+	int				have_space;
 }	t_token_data;
 
 typedef struct s_redirect

@@ -77,6 +77,7 @@ int	create_token(t_token_data data, char *input, t_token **token)
 		return (perror("Malloc failed"), free(new_token), 0);
 	new_token->type = data.type;
 	new_token->quote_type = data.quote;
+	new_token->have_space = data.have_space;
 	new_token->next = NULL;
 	new_token->prev = NULL;
 	ft_lstadd_back(token, new_token);

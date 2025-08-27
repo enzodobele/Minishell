@@ -70,6 +70,10 @@ int	is_single_quote(t_token **token, char *input, int i)
 		data.type = WORD;
 		data.quote = SINGLE_QUOTE;
 		data.len = (i - (start + 1));
+		if (input[i + 1] && (input[i + 1] == ' ' || input[i + 1] == '\t'))
+			data.have_space = 1;
+		else
+			data.have_space = 0;
 		if (!create_token(data, input, token))
 			return (0);
 		return (i - start + 1);
@@ -93,6 +97,10 @@ int	is_double_quote(t_token **token, char *input, int i)
 		data.type = WORD;
 		data.quote = DOUBLE_QUOTE;
 		data.len = (i - (start + 1));
+		if (input[i + 1] && (input[i + 1] == ' ' || input[i + 1] == '\t'))
+			data.have_space = 1;
+		else
+			data.have_space = 0;
 		if (!create_token(data, input, token))
 			return (0);
 		return (i - start + 1);
