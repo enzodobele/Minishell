@@ -60,6 +60,7 @@ SRC_UTILS = \
 	handle_exit_var.c \
 	is_char_token.c \
 	print_syntaxe_error.c \
+	token_utils.c \
 
 SRC_EXEC = \
 	command_validation.c \

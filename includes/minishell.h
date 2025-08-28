@@ -292,6 +292,10 @@ void		ft_putstr_fd(char *s, int fd);
 char		*ft_itoa(int n);
 char		*ft_substr(const char *s, unsigned int start, size_t len);
 
+t_token		*join_two_tokens(t_token *first, t_token *second);
+t_token		*duplicate_token(t_token *token);
+
+
 void		handle_cd_error(t_command *command, int result);
 void		handle_export_error(char *arg);
 // Cleanup functions

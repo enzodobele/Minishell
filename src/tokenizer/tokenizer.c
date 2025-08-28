@@ -94,9 +94,8 @@ int	add_new_token_word(int start, int i, t_token **token, char *input)
 	if (!new_token)
 		return (perror("Malloc failed"), 0);
 	*new_token = (t_token){0};
-	new_token->have_space = 1;
-	if (input[i + 1] && input[i + 1] != ' ' && input[i + 1] != '\t')
-		new_token->have_space = 0;
+	if (input[i] && (input[i] == ' ' || input[i] == '\t'))
+		new_token->have_space = 1;
 	new_token->string = ft_strdup(input, (i - start), start);
 	if (!new_token->string)
 		return (perror("Malloc failed"), free(new_token), 0);
