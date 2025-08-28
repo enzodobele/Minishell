@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   m_builtin_export_utils.c                           :+:      :+:    :+:   */
+/*   builtin_export_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:54:44 by mzimeris          #+#    #+#             */
-/*   Updated: 2025/08/27 18:33:38 by mzimeris         ###   ########.fr       */
+/*   Updated: 2025/08/28 20:28:24 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,6 @@ int	print_export(t_env *env)
 			printf("export %s\n", current->key);
 		current = current->next;
 	}
-	printf("x===================================================x\n");
-	printf("| Export MINISHELL : to the trash !!!               |\n");
-	printf("| Thanks to the man !                               |\n");
-	printf("| Undefined behavior means i can do anything i want |\n");
-	printf("x===================================================x\n");
 	return (0);
 }
 
