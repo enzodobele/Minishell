@@ -8,6 +8,7 @@ int	is_less_than_symbol(t_token **token, char *input, int i)
 	{
 		data.start = i;
 		data.quote = NO_WORD;
+		data.have_space = 1;
 		if (input[i + 1] && input[i + 1] == '<')
 		{
 			data.len = 2;
@@ -36,6 +37,7 @@ int	is_greater_than_symbol(t_token **token, char *input, int i)
 	{
 		data.start = i;
 		data.quote = NO_WORD;
+		data.have_space = 1;
 		if (input[i + 1] && input[i + 1] == '>')
 		{
 			data.len = 2;
@@ -48,7 +50,6 @@ int	is_greater_than_symbol(t_token **token, char *input, int i)
 		{
 			data.len = 1;
 			data.type = REDIR_OUT;
-			data.have_space = 1;
 			if (!create_token(data, input, token))
 				return (0);
 			return (1);
