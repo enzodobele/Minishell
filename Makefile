@@ -64,6 +64,7 @@ SRC_UTILS = \
 
 SRC_EXEC = \
 	command_validation.c \
+	entry_point.c \
 	exec.c \
 	fork.c \
 	heredoc_child.c \

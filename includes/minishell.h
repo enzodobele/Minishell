@@ -116,6 +116,15 @@ typedef enum e_parsing_state
 	EXPECTING_FILE
 }	t_parsing_state;
 
+typedef struct s_expand
+{
+	const char	*str;
+	int			*i;
+	char		*res;
+	int			*res_pos;
+	t_env		**env;
+}	t_expand;
+
 //test
 char		*get_token_type_str(t_token_type type);
 char		*get_quote_type_str(t_quote_type quote);
@@ -136,11 +145,12 @@ void		process_args(t_token **args, t_env **env);
 int			extract_var_name(const char *str, int *i, char *var_name);
 void		ft_itoa_into(char *buf, int n);
 void		expand_structure_env_vars(t_command *commands, t_env **env);
-int			handle_env_var(const char *str, int *i, char *res, int *res_pos, t_env **env);
+int			handle_env_var(t_expand *ctx);
 char		*copy_env_value(char *result, int *result_pos, char *env_value);
 void		expand_any_string_with_quotes(char **str, t_env **env,
 				t_quote_type quote_type);
-char		*process_expansion(const char *str, t_env **env, char *res, int res_pos);
+char		*process_expand(const char *str, t_env **env, char *res,
+				int res_pos);
 int			handle_exit_status(char *res, int *res_pos, t_env **env);
 
 //fonction minishell
@@ -179,10 +189,12 @@ t_command	*parse_tokens(t_token *token, t_env **env);
 t_command	*handle_parsing_error(t_command **commands,
 				t_command *current_command);
 int			is_redirection_token(t_token_type type);
-int			add_redir(t_command *cmd, t_token_type type, char *file, t_quote_type quote);
+int			add_redir(t_command *cmd, t_token_type type, char *file,
+				t_quote_type quote);
 void		add_redirect_to_list(t_redirect **redirects,
 				t_redirect *new_redirect);
-t_redirect	*create_redirection(t_token_type tp, char *file, t_quote_type quote);
+t_redirect	*create_redirection(t_token_type tp, char *file,
+				t_quote_type quote);
 char		*get_token_symbol(t_token_type type);
 int			handle_word_token(t_parsing_state *state, t_command **current_cmd,
 				t_token *token, t_command **commands);
@@ -295,11 +307,14 @@ char		*ft_substr(const char *s, unsigned int start, size_t len);
 t_token		*join_two_tokens(t_token *first, t_token *second);
 t_token		*duplicate_token(t_token *token);
 
-
+int			pipexecution_loop(t_env *env, t_command *cmd,
+				t_pipe_data *pipe_data);
 void		handle_cd_error(t_command *command, int result);
 void		handle_export_error(char *arg);
 // Cleanup functions
-void		cleanup_minishell(char **input, t_token **token, t_command **cmd, t_env *env);
-void		cleanup_and_exit(char **input, t_token **token, t_command **cmd, t_env *env);
+void		cleanup_minishell(char **input, t_token **token, t_command **cmd,
+				t_env *env);
+void		cleanup_and_exit(char **input, t_token **token, t_command **cmd,
+				t_env *env);
 
 #endif /* MINISHELL_H */

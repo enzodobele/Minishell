@@ -1,6 +1,9 @@
 obj/
 *.o
+tests/
 tests/bash/
 tests/*.out
 tests/minishell/
 minishell
+.valgrind_suppress
+run_valgrind.sh

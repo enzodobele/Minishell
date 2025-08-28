@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_pre_parsing.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edobele <edobele@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:53:27 by edobele           #+#    #+#             */
-/*   Updated: 2025/08/28 16:53:28 by edobele          ###   ########.fr       */
+/*   Updated: 2025/08/28 20:03:18 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void	execute_command(t_token **token, t_env **env)
 	t_command	*cmd;
 
 	cmd = parse_tokens(*token, env);
-	test_parsing(*token, env);
 	pipexecution(*env, cmd);
 	if (cmd)
 		free_command_chain(&cmd);

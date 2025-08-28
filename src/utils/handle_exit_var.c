@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_exit_var.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edobele <edobele@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mzimeris <mzimeris@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:52:18 by edobele           #+#    #+#             */
-/*   Updated: 2025/08/28 16:52:19 by edobele          ###   ########.fr       */
+/*   Updated: 2025/08/28 20:01:23 by mzimeris         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,31 @@ int	handle_exit_status(char *res, int *res_pos, t_env **env)
 	return (2);
 }
 
-int	handle_env_var(const char *str, int *i, char *res, int *res_pos, t_env **env)
+char	*get_env_value(const char *var_name, t_env **env)
 {
-	char	var_name[256];
-	int		var_len;
-	char	*env_value;
+	t_env_node	*current;
 
-	var_len = extract_var_name(str, i, var_name);
-	if (var_len > 0)
+	if (!var_name || !env || !*env || !(*env)->env_list)
+		return (NULL);
+	current = (*env)->env_list;
+	while (current)
 	{
-		env_value = get_env_value(var_name, env);
-		if (env_value)
-			copy_env_value(res, res_pos, env_value);
+		if (current->key && ft_strcmp(current->key, var_name) == 0)
+			return (current->value);
+		current = current->next;
 	}
-	else
-		res[(*res_pos)++] = '$';
-	return (0);
+	return (NULL);
+}
+
+char	*copy_env_value(char *result, int *result_pos, char *env_value)
+{
+	int	env_len;
+
+	env_len = ft_strlen(env_value);
+	if (*result_pos + env_len < 2047)
+	{
+		ft_strcpy(&result[*result_pos], env_value);
+		*result_pos += env_len;
+	}
+	return (result);
 }

@@ -1,8 +1,0 @@
-./tests/bash/test4.out
-./tests/minishell/test4.out
-
---- ./tests/bash/test4.out	2025-08-26 17:51:53.402001988 +0200
-+++ ./tests/minishell/test4.out	2025-08-26 17:51:53.490003803 +0200
-@@ -1,2 +1 @@
--export USER="mzimeris"
- 0
