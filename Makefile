@@ -106,9 +106,9 @@ YELLOW = \033[0;33m
 RED = \033[0;31m
 RESET = \033[0m
 
-all: $(NAME)
+all: $(NAME) 
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) $(INCLUDES_DIR)/minishell.h
 	@echo "$(YELLOW)🔧 Compilation de $(NAME)...$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 	@echo "$(GREEN)✅ Compilé avec succès !$(RESET)"
