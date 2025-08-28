@@ -78,7 +78,6 @@ SRC_PARSING = \
 	process_pre_parsing_bis.c \
 	process_pre_parsing.c \
 	process_var.c \
-	test_parsing.c \
 
 SRC_TOKENIZER = \
 	create_command.c \
