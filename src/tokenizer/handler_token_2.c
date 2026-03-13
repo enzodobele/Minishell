@@ -1,0 +1,77 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handler_token_2.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edobele <edobele@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/28 16:54:41 by edobele           #+#    #+#             */
+/*   Updated: 2025/08/28 16:54:42 by edobele          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minishell.h"
+
+int	add_redir(t_command *cmd, t_token_type type, char *file, t_quote_type quote)
+{
+	t_redirect	*new_redirect;
+
+	if (!cmd || !file)
+		return (0);
+	new_redirect = create_redirection(type, file, quote);
+	if (!new_redirect)
+		return (0);
+	add_redirect_to_list(&(cmd->redirects), new_redirect);
+	return (1);
+}
+
+int	is_redirection_token(t_token_type type)
+{
+	return (type == REDIR_OUT || type == REDIR_IN
+		||type == REDIR_APPEND || type == HEREDOC);
+}
+
+int	handle_redirection_token(t_parsing_state *state, t_command **current_cmd)
+{
+	if (!*current_cmd)
+		*current_cmd = create_new_command(NULL);
+	*state = EXPECTING_FILE;
+	return (1);
+}
+
+int	handle_pipe_token(t_parsing_state *state, t_command **current_cmd,
+		t_command **commands, t_token *token)
+{
+	if (*current_cmd)
+	{
+		(*current_cmd)->pipe_out = 1;
+		ft_lstadd_back_command(commands, *current_cmd);
+	}
+	*current_cmd = NULL;
+	if (token->next && is_redirection_token(token->next->type))
+		*state = EXPECTING_FILE;
+	else
+		*state = EXPECTING_CMD;
+	return (1);
+}
+
+int	process_single_token(t_token *token, t_parsing_state *state,
+		t_command **current_cmd, t_command **commands)
+{
+	if (token->type == WORD)
+	{
+		if (!handle_word_token(state, current_cmd, token, commands))
+			return (0);
+	}
+	else if (is_redirection_token(token->type))
+	{
+		if (!handle_redirection_token(state, current_cmd))
+			return (0);
+	}
+	else if (token->type == PIPE)
+	{
+		if (!handle_pipe_token(state, current_cmd, commands, token))
+			return (0);
+	}
+	return (1);
+}
