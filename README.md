@@ -326,30 +326,6 @@ echo 'Hello $HOME'
 # Edge cases
 echo
 ```
-
----
-
-## 🤝 Contributing
-
-Contributions, bug reports and feature suggestions are welcome!
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/my-feature`
-3. **Commit** your changes: `git commit -m "feat: add my feature"`
-4. **Push** to the branch: `git push origin feature/my-feature`
-5. **Open** a Pull Request
-
-Please make sure your code:
-- Compiles without warnings under `-Wall -Wextra -Werror`
-- Follows the [42 School norm](https://github.com/42School/norminette) (if applicable)
-- Does not introduce memory leaks (check with `valgrind`)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
 ---
 
 ## 👤 Author
@@ -359,7 +335,3 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 - GitHub: [@enzodobele](https://github.com/enzodobele)
 
 ---
-
-<div align="center">
-Made with ❤️ as part of the 42 School curriculum
-</div>
