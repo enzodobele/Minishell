@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🐚 Minishell
+# Minishell
 
 **A minimal Unix shell implemented in C, inspired by bash**
 
